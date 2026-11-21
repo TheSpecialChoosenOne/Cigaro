@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:block/smooth_stone"
+    },
+    "cases": [
+      {
+        "when": "cutting_table",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_cutting_table"
+        }
+      },
+      {
+        "when": "cutting_table_3d",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_cutting_table"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:block/polished_blackstone"
+    },
+    "cases": [
+      {
+        "when": "drying_rack",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/drying_rack_2d"
+        }
+      },
+      {
+        "when": "drying_rack_3d",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_drying_rack"
+        }
+      }
+    ]
+  }
+}

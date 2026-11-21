@@ -1,0 +1,127 @@
+{
+  "targets": {
+    "swap": {},
+    "fade_a": {
+      "width": 2,
+      "height": 2,
+      "persistent": true
+    },
+    "fade_b": {
+      "width": 2,
+      "height": 2,
+      "persistent": true
+    }
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "cigaro:post/fade_step",
+      "inputs": [
+        {
+          "sampler_name": "Prev",
+          "target": "fade_b"
+        }
+      ],
+      "output": "fade_a",
+      "uniforms": {
+        "FadeConfig": [
+          {
+            "name": "Speed",
+            "type": "float",
+            "value": 0.0084
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "fade_a"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      "output": "fade_b"
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "cigaro:post/cigaro_fx",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "minecraft:main",
+          "bilinear": true
+        },
+        {
+          "sampler_name": "Fade",
+          "target": "fade_a"
+        }
+      ],
+      "output": "swap",
+      "uniforms": {
+        "CigaroConfig": [
+          {
+            "name": "ModeAndDir",
+            "type": "vec4",
+            "value": [
+              5.0,
+              -1.0,
+              1.15,
+              1.0
+            ]
+          },
+          {
+            "name": "TintAndVign",
+            "type": "vec4",
+            "value": [
+              1.0,
+              0.98,
+              0.72,
+              1.25
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      "output": "minecraft:main"
+    }
+  ]
+}

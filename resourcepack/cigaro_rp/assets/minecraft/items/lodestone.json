@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:block/lodestone"
+    },
+    "cases": [
+      {
+        "when": "rolling_machine",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_rolling_machine"
+        }
+      },
+      {
+        "when": "rolling_machine_3d",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_rolling_machine"
+        }
+      }
+    ]
+  }
+}

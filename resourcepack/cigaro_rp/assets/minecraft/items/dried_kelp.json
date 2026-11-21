@@ -1,0 +1,40 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/dried_kelp"
+    },
+    "cases":[
+      { "when": "tobacco_leaf_virginia", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_virginia" } },
+      { "when": "tobacco_leaf_burley", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_burley" } },
+      { "when": "tobacco_leaf_oriental", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_oriental" } },
+      { "when": "tobacco_leaf_dark_fired", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_dark_fired" } },
+      { "when": "elite_leaf_virginia", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_virginia" } },
+      { "when": "elite_leaf_burley", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_burley" } },
+      { "when": "elite_leaf_oriental", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_oriental" } },
+      { "when": "elite_leaf_dark_fired", "model": { "type": "minecraft:model", "model": "cigaro:item/tobacco_leaf_dark_fired" } },
+
+      { "when": "cut_tobacco_virginia_bad", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_bad" } },
+      { "when": "cut_tobacco_virginia_rough", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_rough" } },
+      { "when": "cut_tobacco_virginia_good", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_good" } },
+      { "when": "cut_tobacco_virginia_perfect", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_perfect" } },
+      
+      { "when": "cut_tobacco_burley_bad", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_bad" } },
+      { "when": "cut_tobacco_burley_rough", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_rough" } },
+      { "when": "cut_tobacco_burley_good", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_good" } },
+      { "when": "cut_tobacco_burley_perfect", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_perfect" } },
+      
+      { "when": "cut_tobacco_oriental_bad", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_bad" } },
+      { "when": "cut_tobacco_oriental_rough", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_rough" } },
+      { "when": "cut_tobacco_oriental_good", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_good" } },
+      { "when": "cut_tobacco_oriental_perfect", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_perfect" } },
+      
+      { "when": "cut_tobacco_dark_fired_bad", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_bad" } },
+      { "when": "cut_tobacco_dark_fired_rough", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_rough" } },
+      { "when": "cut_tobacco_dark_fired_good", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_good" } },
+      { "when": "cut_tobacco_dark_fired_perfect", "model": { "type": "minecraft:model", "model": "cigaro:item/cut_perfect" } }
+    ]
+  }
+}

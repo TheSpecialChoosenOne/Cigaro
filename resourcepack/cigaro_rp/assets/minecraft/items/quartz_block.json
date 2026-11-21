@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:block/quartz_block"
+    },
+    "cases": [
+      {
+        "when": "rolling_press",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_rolling_press"
+        }
+      }
+    ]
+  }
+}

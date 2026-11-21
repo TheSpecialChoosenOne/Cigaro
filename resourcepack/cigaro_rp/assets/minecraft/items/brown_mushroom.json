@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/brown_mushroom"
+    },
+    "cases": [
+      {
+        "when": "fuel_pellets",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/fuel_pellets"
+        }
+      }
+    ]
+  }
+}

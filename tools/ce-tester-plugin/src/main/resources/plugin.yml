@@ -1,0 +1,11 @@
+name: CeTester
+version: '${version}'
+main: com.cigaro.cetester.CeTesterPlugin
+api-version: '26.3'
+description: Tab-completable /ce command for the Cigaro shader effect tester.
+author: Cigaro
+
+permissions:
+  cetester.use:
+    description: Use the /ce shader effect tester command
+    default: op

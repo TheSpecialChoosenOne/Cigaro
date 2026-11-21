@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:block/smithing_table"
+    },
+    "cases": [
+      {
+        "when": "blending_table",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_blending_table"
+        }
+      },
+      {
+        "when": "blending_table_3d",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_blending_table"
+        }
+      }
+    ]
+  }
+}

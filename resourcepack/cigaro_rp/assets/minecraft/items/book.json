@@ -1,0 +1,68 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/book"
+    },
+    "cases": [
+      {
+        "when": "cigarettepack_blue",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_blue"
+        }
+      },
+      {
+        "when": "cigarettepack_green",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_green"
+        }
+      },
+      {
+        "when": "cigarettepack_lightblue",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_lightblue"
+        }
+      },
+      {
+        "when": "cigarettepack_orange",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_orange"
+        }
+      },
+      {
+        "when": "cigarettepack_pink",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_pink"
+        }
+      },
+      {
+        "when": "cigarettepack_purple",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_purple"
+        }
+      },
+      {
+        "when": "cigarettepack_red",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_red"
+        }
+      },
+      {
+        "when": "cigarettepack_yellow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarettepack_yellow"
+        }
+      }
+    ]
+  }
+}

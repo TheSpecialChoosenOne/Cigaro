@@ -1,0 +1,36 @@
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build output
+build/
+out/
+target/
+.gradle/
+
+# Local archives and scratch files (kept on disk, not in git)
+archive/
+*.rar
+*.zip
+*.bak
+*.orig
+*.tmp
+combined_data.txt
+
+# Runtime (run-paper)
+run/
+logs/
+temp/
+
+# Local credentials and databases
+.env
+.env.*
+*.db
+*.db-wal
+*.db-shm
+
+# OS
+.DS_Store
+Thumbs.db

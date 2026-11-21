@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/leather"
+    },
+    "cases": [
+      {
+        "when": "nicotine_patch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/nicotine_patch"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/potion"
+    },
+    "cases": [
+      {
+        "when": "flavor_bottle_mint",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_mint"
+        }
+      },
+      {
+        "when": "flavor_bottle_coffee",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_coffee"
+        }
+      },
+      {
+        "when": "flavor_bottle_caramel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_caramel"
+        }
+      },
+      {
+        "when": "flavor_bottle_vanilla",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_vanilla"
+        }
+      },
+      {
+        "when": "flavor_bottle_cherry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_cherry"
+        }
+      },
+      {
+        "when": "flavor_bottle_spice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_spice"
+        }
+      },
+      {
+        "when": "flavor_bottle_herbal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_herbal"
+        }
+      },
+      {
+        "when": "flavor_bottle_shadow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/flavor_bottle_shadow"
+        }
+      }
+    ]
+  }
+}

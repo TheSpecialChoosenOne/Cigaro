@@ -1,0 +1,96 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/kelp"
+    },
+    "cases": [
+      {
+        "when": "tobacco_leaf_virginia",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_virginia"
+        }
+      },
+      {
+        "when": "tobacco_leaf_burley",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_burley"
+        }
+      },
+      {
+        "when": "tobacco_leaf_oriental",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_oriental"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dark_fired",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_dark_fired"
+        }
+      },
+      {
+        "when": "elite_leaf_virginia",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_virginia"
+        }
+      },
+      {
+        "when": "elite_leaf_burley",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_burley"
+        }
+      },
+      {
+        "when": "elite_leaf_oriental",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_oriental"
+        }
+      },
+      {
+        "when": "elite_leaf_dark_fired",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_dark_fired"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dried_virginia",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_dried_virginia"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dried_burley",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_dried_burley"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dried_oriental",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_dried_oriental"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dried_dark_fired",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_dried_dark_fired"
+        }
+      }
+    ]
+  }
+}

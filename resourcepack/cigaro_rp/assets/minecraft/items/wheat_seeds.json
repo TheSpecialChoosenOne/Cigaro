@@ -1,0 +1,40 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/wheat_seeds"
+    },
+    "cases": [
+      {
+        "when": "tobacco_seeds_virginia",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_virginia"
+        }
+      },
+      {
+        "when": "tobacco_seeds_burley",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_burley"
+        }
+      },
+      {
+        "when": "tobacco_seeds_oriental",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_oriental"
+        }
+      },
+      {
+        "when": "tobacco_seeds_dark_fired",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_dark_fired"
+        }
+      }
+    ]
+  }
+}

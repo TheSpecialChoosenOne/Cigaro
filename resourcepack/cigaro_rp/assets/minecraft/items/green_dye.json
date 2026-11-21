@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "cases": [
+      {
+        "when": "tobacco_fertilizer",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_fertilizer"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/green_dye"
+    }
+  }
+}

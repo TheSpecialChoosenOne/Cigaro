@@ -1,0 +1,1072 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/stick"
+    },
+    "cases":[
+      {
+        "when": "cigarette_mint_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_mint_unlit_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_mint_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_mint_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_mint_full_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_mint_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_mint_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_mint_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_mint_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_mint_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_mint_low_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_mint_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_coffee_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_coffee_unlit_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_coffee_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_coffee_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_coffee_full_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_coffee_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_coffee_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_coffee_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_coffee_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_coffee_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_coffee_low_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_coffee_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_caramel_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_caramel_unlit_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_caramel_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_caramel_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_caramel_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_caramel_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_caramel_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_caramel_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_caramel_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_caramel_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_caramel_low_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_caramel_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_vanilla_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_vanilla_unlit_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_vanilla_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_vanilla_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_vanilla_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_vanilla_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_vanilla_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_vanilla_mid_3d"
+          },
+          "cases":[
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_vanilla_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_vanilla_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_vanilla_low_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_vanilla_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_cherry_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_cherry_unlit_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_cherry_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_cherry_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_cherry_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_cherry_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_cherry_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_cherry_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_cherry_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_cherry_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_cherry_low_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_cherry_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_spice_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_spice_unlit_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_spice_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_spice_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_spice_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_spice_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_spice_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_spice_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_spice_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_spice_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_spice_low_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_spice_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_herbal_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_herbal_unlit_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_herbal_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_herbal_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_herbal_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_herbal_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_herbal_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_herbal_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_herbal_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_herbal_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_herbal_low_3d"
+          },
+          "cases":[
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_herbal_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_shadow_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_shadow_unlit_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_shadow_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_shadow_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_shadow_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_shadow_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_shadow_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_shadow_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_shadow_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigarette_shadow_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigarette_shadow_low_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigarette_shadow_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "smokescreen_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/smokescreen_unlit_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/smokescreen_unlit"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "smokescreen_full",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/smokescreen_full_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/smokescreen_full"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "smokescreen_mid",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/smokescreen_mid_3d"
+          },
+          "cases": [
+            {
+              "when":[
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/smokescreen_mid"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "smokescreen_low",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/smokescreen_low_3d"
+          },
+          "cases":[
+            {
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/smokescreen_low"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "nicotine_patch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/nicotine_patch"
+        }
+      },
+      {
+        "when": "tobacco_leaf",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_seeds_unique",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_mint",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_coffee",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_caramel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_vanilla",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_cherry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_spice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_herbal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_seeds_shadow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_unique"
+        }
+      },
+      {
+        "when": "tobacco_leaf_mint",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_mint",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_coffee",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_coffee",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_caramel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_caramel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_vanilla",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_vanilla",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_cherry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_cherry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_spice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_spice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_herbal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_herbal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "tobacco_leaf_shadow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "elite_leaf_shadow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf"
+        }
+      },
+      {
+        "when": "cigarette_butt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarette_butt"
+        }
+      }
+    ]
+  }
+}

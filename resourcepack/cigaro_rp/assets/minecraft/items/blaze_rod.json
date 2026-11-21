@@ -1,0 +1,52 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/blaze_rod"
+    },
+    "cases": [
+      {
+        "when": "cigar_unlit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigar_unlit"
+          },
+          "cases": [
+            {
+              "when": [ "gui", "ground", "fixed" ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigar_unlit_2d"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "when": "cigar_lit",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:display_context",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "cigaro:item/cigar_lit"
+          },
+          "cases": [
+            {
+              "when": [ "gui", "ground", "fixed" ],
+              "model": {
+                "type": "minecraft:model",
+                "model": "cigaro:item/cigar_lit_2d"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

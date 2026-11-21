@@ -1,0 +1,132 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "index": 0,
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/paper"
+    },
+    "cases":[
+      {
+        "when": "cigarette_paper",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/cigarette_paper"
+        }
+      },
+      {
+        "when": "tobacco_crop_virginia_stage0",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_virginia_stage0"
+        }
+      },
+      {
+        "when": "tobacco_crop_burley_stage0",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_burley_stage0"
+        }
+      },
+      {
+        "when": "tobacco_crop_oriental_stage0",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_oriental_stage0"
+        }
+      },
+      {
+        "when": "tobacco_crop_dark_fired_stage0",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_dark_fired_stage0"
+        }
+      },
+      {
+        "when": "tobacco_crop_virginia_stage1",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_virginia_stage1"
+        }
+      },
+      {
+        "when": "tobacco_crop_burley_stage1",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_burley_stage1"
+        }
+      },
+      {
+        "when": "tobacco_crop_oriental_stage1",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_oriental_stage1"
+        }
+      },
+      {
+        "when": "tobacco_crop_dark_fired_stage1",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_dark_fired_stage1"
+        }
+      },
+      {
+        "when": "tobacco_crop_virginia_stage2",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_virginia_stage2"
+        }
+      },
+      {
+        "when": "tobacco_crop_burley_stage2",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_burley_stage2"
+        }
+      },
+      {
+        "when": "tobacco_crop_oriental_stage2",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_oriental_stage2"
+        }
+      },
+      {
+        "when": "tobacco_crop_dark_fired_stage2",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_dark_fired_stage2"
+        }
+      },
+      {
+        "when": "tobacco_crop_virginia_stage3",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_virginia_stage3"
+        }
+      },
+      {
+        "when": "tobacco_crop_burley_stage3",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_burley_stage3"
+        }
+      },
+      {
+        "when": "tobacco_crop_oriental_stage3",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_oriental_stage3"
+        }
+      },
+      {
+        "when": "tobacco_crop_dark_fired_stage3",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_dark_fired_stage3"
+        }
+      }
+    ]
+  }
+}

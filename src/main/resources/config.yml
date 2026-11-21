@@ -1,0 +1,202 @@
+# ==========================================================
+#                  CIGARO - Configuration
+# ==========================================================
+# Note: Changing values here requires /cigaro reload
+# ==========================================================
+# Choose language file from the /lang/ folder (e.g. en_us, ru_ru)
+language: "ru_ru"
+
+messages:
+  show-plant-messages: true
+  show-harvest-messages: true
+
+# --- TOBACCO FARMING ---
+tobacco:
+  elite-leaf-chance: 0.05     # 5% base chance to get an Elite Leaf on harvest
+  bone-meal-enabled: true     # Can players use bonemeal? (Has a chance to burn the plant)
+  seed-drop-chance: 0.005     # Chance to drop seeds from grass OUTSIDE a type's native biome.
+                              # Inside a native biome the per-type chance (5%) is used instead.
+
+# --- DRYING RACKS ---
+drying:
+  thresholds:
+    damp: 60                  # Seconds to reach DAMP
+    dried: 180                # Seconds to reach DRIED
+    perfect: 300              # Seconds to reach PERFECT (Vintage requirement)
+    overdried: 420            # Seconds until leaf is RUINED
+
+# --- ROLLING MACHINES ---
+rolling:
+  time-seconds: 30            # How long the manual Rolling Machine takes
+  cigarettes-per-batch: 10    # How many cigarettes a manual batch yields
+
+# --- SMOKING ---
+smoking:
+  puff-cooldown-ms: 2500          # Delay between puffs. Shown as a vanilla item cooldown
+  cigarette-animation-ticks: 16   # Length of the puff animation (cosmetic only)
+  cigar-lighting-ticks: 60        # Length of the cigar lighting animation (cosmetic only)
+  session-timeout-seconds: 30     # A smoking session with no activity is dropped after this
+
+# ==========================================================
+#  SMOKE EFFECTS (Fully customizable)
+# ==========================================================
+# Duration is in SECONDS.
+# WARNING: Cigars (x2.5), Quality (up to x3.0), and
+# Predisposition (x1.5) multiply this duration!
+# Keep base durations around 60-120 seconds to prevent OP buffs.
+# ==========================================================
+effects:
+  mint:
+    - type: SPEED
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+    - type: JUMP_BOOST
+      duration: 60
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+
+  coffee:
+    - type: HASTE
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+
+  caramel:
+    - type: REGENERATION
+      duration: 15          # Regen is very strong, keep base short
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+    - type: ABSORPTION
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+
+  vanilla:
+    - type: NIGHT_VISION
+      duration: 180
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+    - type: LUCK
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+
+  cherry:
+    - type: FIRE_RESISTANCE
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+    - type: RESISTANCE
+      duration: 60
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+
+  spice:
+    - type: STRENGTH
+      duration: 45
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+    - type: SPEED
+      duration: 60
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+    - type: HUNGER
+      duration: 30
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+      is-side-effect: true
+
+  herbal:
+    - type: REGENERATION
+      duration: 20
+      amplifier: 1
+      favorite-bonus-amplifier: 1
+    - type: SATURATION
+      duration: 5           # Saturation fills food bar instantly, 5s is enough
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+
+  shadow:
+    - type: INVISIBILITY
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+    - type: SPEED
+      duration: 120
+      amplifier: 0
+      favorite-bonus-amplifier: 1
+    - type: WEAKNESS
+      duration: 45
+      amplifier: 0
+      favorite-bonus-amplifier: 0
+      is-side-effect: true
+
+# --- NEGATIVE EFFECTS ---
+# Applied when smoking a catastrophic flavor or getting bad reactions.
+bad-smoke-debuffs:
+  - type: NAUSEA
+    duration: 5
+    amplifier: 0
+  - type: SLOWNESS
+    duration: 8
+    amplifier: 0
+
+catastrophic-smoke-debuffs:
+  - type: NAUSEA
+    duration: 15
+    amplifier: 0
+  - type: SLOWNESS
+    duration: 10
+    amplifier: 0
+  - type: WEAKNESS
+    duration: 10
+    amplifier: 0
+  - type: MINING_FATIGUE
+    duration: 10
+    amplifier: 1
+  - type: POISON
+    duration: 5
+    amplifier: 0
+
+# --- FLAVOR EXTRACT DROPS ---
+# Chances to find raw flavor ingredients in the wild.
+# Adjusted to be balanced for auto-farming and regular gameplay.
+flavors:
+  mint-drop-chance: 0.04      # Leaves (Spruce, Oak, Birch)
+  coffee-drop-chance: 0.05    # Cocoa beans
+  caramel-drop-chance: 0.03   # Wheat, Hay blocks (Low chance due to easy farming)
+  vanilla-drop-chance: 0.06   # Dead bushes, Cactus
+  cherry-drop-chance: 0.04    # Cherry leaves, Petals
+  spice-drop-chance: 0.05     # Nether ores
+  herbal-drop-chance: 0.04    # Moss, Spore blossoms
+  shadow-drop-chance: 0.02    # Sculk (Rare)
+
+# --- ADDICTION MECHANICS ---
+addiction:
+  stage1-threshold: 5         # Addiction points needed for Stage 1 (Light craving)
+  stage2-threshold: 15        # Addiction points needed for Stage 2 (Habit)
+  stage3-threshold: 35        # Addiction points needed for Stage 3 (Addicted)
+  stage4-threshold: 70        # Addiction points needed for Stage 4 (Severe)
+  withdrawal-check-seconds: 60 # How often to check for withdrawal symptoms
+  withdrawal-grace-minutes: 25 # How long the player feels "fine" after a smoke
+  quit-time-hours: 4          # IN-GAME hours sober required to drop ONE addiction stage. (e.g. Stage 4 to 0 = 16 hours)
+
+# --- TOLERANCE MECHANICS ---
+tolerance:
+  per-smoke: 0.05             # +5% tolerance per cigarette
+  decay-per-hour: 0.15        # -15% tolerance per hour of playing sober
+
+# --- HEALTH & MEDICAL ---
+medical:
+  patch-cooldown-minutes: 40
+  lung-damage:
+    stage1-smokes: 500   # -1 Heart
+    stage2-smokes: 1000  # -2 Hearts
+    stage3-smokes: 1500  # -3 Hearts
+  lung-recovery:
+    enabled: true
+    clean-days-per-heart: 5  # Clean in-game days after withdrawal before each heart returns
+
+# Note: The "buffs" section (mint-base-seconds, etc.) has been removed.
+# The plugin now directly reads the base duration from the "effects" list above.

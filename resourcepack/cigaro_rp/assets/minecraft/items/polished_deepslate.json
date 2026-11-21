@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:block/polished_deepslate"
+    },
+    "cases": [
+      {
+        "when": "packing_machine",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_packing_machine"
+        }
+      },
+      {
+        "when": "packing_machine_3d",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/station_packing_machine"
+        }
+      }
+    ]
+  }
+}

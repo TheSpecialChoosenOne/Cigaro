@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "cigaro-bridge",
+  "version": "1.0.0",
+  "name": "Cigaro Client Bridge",
+  "description": "Loopback TCP control port for automated Cigaro client testing.",
+  "authors": ["Cigaro"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.cigaro.bridge.CigaroBridgeClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}
