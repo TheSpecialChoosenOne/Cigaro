@@ -4,7 +4,7 @@
 # Note: Changing values here requires /cigaro reload
 # ==========================================================
 # Choose language file from the /lang/ folder (e.g. en_us, ru_ru)
-language: "ru_ru"
+language: "en_us"
 
 messages:
   show-plant-messages: true

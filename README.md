@@ -38,7 +38,7 @@ Other server implementations and Minecraft versions have not been verified as su
 1. Download `Cigaro-1.1.0.jar` and `Cigaro-ResourcePack-1.1.0.zip` from the [release page](https://github.com/TheSpecialChoosenOne/Cigaro/releases/tag/v1.1.0).
 2. Place the JAR in your server's `plugins` folder and restart the server.
 3. Install the ZIP as a client resource pack, or configure your server to distribute it. The pack supplies the custom models, textures and interfaces.
-4. Review `plugins/Cigaro/config.yml` and the language files in `plugins/Cigaro/lang/`. The default language is Russian; set `language: "en_us"` for English.
+4. Review `plugins/Cigaro/config.yml` and the language files in `plugins/Cigaro/lang/`. The default language is English; set `language: "ru_ru"` for Russian.
 
 If your server already uses a resource pack, test and merge overlapping item definitions and fonts as needed. Distributing multiple packs does not automatically resolve conflicts between them.
 
