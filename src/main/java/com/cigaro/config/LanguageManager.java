@@ -91,11 +91,28 @@ public class LanguageManager {
             for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
                 target.put(entry.getKey(), entry.getValue());
             }
+            updateUnmodifiedPatchMessages(file.getName(), target);
             return true;
         } catch (IOException | IllegalStateException e) {
             plugin.getLogger().log(java.util.logging.Level.SEVERE,
                     "Failed to load language file: " + file.getName() + ". Check for JSON syntax errors!", e);
             return false;
+        }
+    }
+
+    private void updateUnmodifiedPatchMessages(String fileName, Map<String, JsonElement> target) {
+        try (var oldStream = plugin.getResource("lang/legacy_patch/" + fileName);
+             var currentStream = plugin.getResource("lang/" + fileName)) {
+            if (oldStream == null || currentStream == null) return;
+            JsonObject oldDefaults = JsonParser.parseReader(new InputStreamReader(oldStream, StandardCharsets.UTF_8)).getAsJsonObject();
+            JsonObject currentDefaults = JsonParser.parseReader(new InputStreamReader(currentStream, StandardCharsets.UTF_8)).getAsJsonObject();
+            for (var entry : oldDefaults.entrySet()) {
+                String key = entry.getKey();
+                if (entry.getValue().equals(target.get(key)) && currentDefaults.has(key))
+                    target.put(key, currentDefaults.get(key));
+            }
+        } catch (IOException | IllegalStateException e) {
+            plugin.getLogger().log(java.util.logging.Level.WARNING, "Failed to update default patch messages for " + fileName, e);
         }
     }
 

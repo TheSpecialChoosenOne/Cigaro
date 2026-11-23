@@ -57,14 +57,19 @@ public class WithdrawalTask implements Runnable {
     }
 
     public void start() {
-        int interval = plugin.getConfigManager().getWithdrawalCheckSeconds() * 20;
-
-        taskId = plugin.getServer().getScheduler()
-                .runTaskTimer(plugin, this, interval, interval)
-                .getTaskId();
+        rescheduleWithdrawal();
 
         rapidTaskId = plugin.getServer().getScheduler()
                 .runTaskTimer(plugin, this::tickAfkAndRegen, 40L, 40L)
+                .getTaskId();
+    }
+
+    public void rescheduleWithdrawal() {
+        if (taskId != -1) plugin.getServer().getScheduler().cancelTask(taskId);
+        long interval = plugin.getConfigManager().getWithdrawalCheckSeconds() * 20L;
+
+        taskId = plugin.getServer().getScheduler()
+                .runTaskTimer(plugin, this, interval, interval)
                 .getTaskId();
     }
 
@@ -90,7 +95,7 @@ public class WithdrawalTask implements Runnable {
 
         int stage = data.getAddictionStage();
         if (stage < 2) return;
-        if (isInGracePeriod(data)) return;
+        if (isInGracePeriod(data) || data.isPatchActive()) return;
 
         double chance = switch (activity) {
             case "mining" -> stage * 0.03;
@@ -112,7 +117,7 @@ public class WithdrawalTask implements Runnable {
             PlayerData data = plugin.getPlayerDataManager().getData(uuid);
 
             int stage = data.getAddictionStage();
-            if (stage < 2 || isInGracePeriod(data) || data.isPatchActive()) {
+            if (stage < 2 || isInGracePeriod(data)) {
                 afkPlayers.put(uuid, false);
                 continue;
             }
@@ -136,7 +141,7 @@ public class WithdrawalTask implements Runnable {
                 }
             }
 
-            if (afkPlayers.getOrDefault(uuid, false)) {
+            if (afkPlayers.getOrDefault(uuid, false) && !data.isPatchActive()) {
                 if (player.hasPotionEffect(PotionEffectType.REGENERATION)) {
                     player.removePotionEffect(PotionEffectType.REGENERATION);
                 }
@@ -198,7 +203,6 @@ public class WithdrawalTask implements Runnable {
             if (maxStage == 0) {
                 if (data.wasAddicted()) {
                     tickLungRecovery(player, data, checkSeconds);
-                    if (!data.isPatchActive()) triggerConditionedCues(player, data);
                     plugin.getPlayerDataManager().save(uuid);
                 }
                 continue;
@@ -206,7 +210,7 @@ public class WithdrawalTask implements Runnable {
 
             data.resetLungRecoveryProgress();
 
-            if (!data.isPreWarningSent()) {
+            if (!data.isPatchActive() && !data.isPreWarningSent()) {
                 long timeSinceSmoke = System.currentTimeMillis() - data.getLastSmokeTime();
                 long graceMs = plugin.getConfigManager().getWithdrawalGraceMinutes() * 60_000L;
                 long alertMs = graceMs - (3 * 60_000L);
@@ -225,7 +229,7 @@ public class WithdrawalTask implements Runnable {
 
             boolean isAfk = afkPlayers.getOrDefault(uuid, false);
 
-            if (!isAfk && mStage >= 2 && random.nextDouble() < 0.05) {
+            if (!isAfk && !data.isPatchActive() && mStage >= 2 && random.nextDouble() < 0.05) {
                 triggerInvoluntaryGesture(player);
             }
 
@@ -237,9 +241,13 @@ public class WithdrawalTask implements Runnable {
             double hourFraction = secondsToAdd / 3600.0;
 
             double decay = PlayerData.scoreDecayPerHour() * hourFraction;
+            double oldPhysical = data.getPhysicalScore(), oldPsychological = data.getPsychologicalScore();
             data.setPhysicalScore(data.getPhysicalScore() - decay);
             data.setPsychologicalScore(data.getPsychologicalScore() - decay * 1.2);
 
+            if (oldPhysical != data.getPhysicalScore() || oldPsychological != data.getPsychologicalScore())
+                plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroAddictionChangeEvent(
+                        uuid, oldPhysical, oldPsychological, data.getPhysicalScore(), data.getPsychologicalScore()));
             data.checkAndTriggerPhysicalStageDown(player);
             data.checkAndTriggerPsychologicalStageDown(player);
 
@@ -283,9 +291,9 @@ public class WithdrawalTask implements Runnable {
             }
 
             double worstScore = Math.max(data.getPhysicalScore(), data.getPsychologicalScore());
-            double progress = 1.0 - (worstScore / PlayerData.maxScore());
-
-            if (progress >= 0.80) {
+            double lower = PlayerData.stageThreshold(maxStage);
+            double upper = maxStage < 4 ? PlayerData.stageThreshold(maxStage + 1) : PlayerData.maxScore();
+            if (maxStage >= 2 && upper > lower && worstScore <= lower + (upper - lower) * 0.2) {
                 handleCrisis(player, data, uuid, maxStage);
                 continue;
             }
@@ -547,7 +555,7 @@ public class WithdrawalTask implements Runnable {
             final int idx = i;
             plugin.getServer().getScheduler()
                     .runTaskLater(plugin, () -> {
-                        if (!player.isOnline()) return;
+                        if (!player.isOnline() || plugin.getPlayerDataManager().getData(player.getUniqueId()).isPatchActive()) return;
                         player.addPotionEffect(new PotionEffect(
                                 PotionEffectType.DARKNESS, 30, 0, true, false, false));
                     }, 20L + idx * 40L);
@@ -558,7 +566,7 @@ public class WithdrawalTask implements Runnable {
 
         plugin.getServer().getScheduler()
                 .runTaskLater(plugin, () -> {
-                    if (!player.isOnline()) return;
+                    if (!player.isOnline() || plugin.getPlayerDataManager().getData(player.getUniqueId()).isPatchActive()) return;
                     player.playSound(player.getLocation(),
                             Sound.ENTITY_WARDEN_HEARTBEAT, 0.5f, 1.0f);
                 }, 20L);

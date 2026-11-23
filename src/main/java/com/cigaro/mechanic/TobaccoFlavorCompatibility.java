@@ -11,6 +11,15 @@ public final class TobaccoFlavorCompatibility {
     private TobaccoFlavorCompatibility() {}
 
     private record Profile(Set<CigaretteType> matched, Set<CigaretteType> clashed) {}
+    private static final java.util.Map<String, Profile> ADDON_PROFILES = new java.util.HashMap<>();
+
+    public static void registerProfile(TobaccoType type, Set<CigaretteType> matched, Set<CigaretteType> clashed) {
+        java.util.Objects.requireNonNull(type);
+        Set<CigaretteType> positive = Set.copyOf(matched), negative = Set.copyOf(clashed);
+        if (!java.util.Collections.disjoint(positive, negative)) throw new IllegalArgumentException("Conflicting flavors");
+        if (ADDON_PROFILES.putIfAbsent(type.name(), new Profile(positive, negative)) != null)
+            throw new IllegalArgumentException("Profile already registered: " + type.name());
+    }
 
     private static final Profile VIRGINIA = new Profile(
             Set.of(CigaretteType.VANILLA, CigaretteType.CHERRY,
@@ -42,13 +51,19 @@ public final class TobaccoFlavorCompatibility {
 
     public static FlavorHarmony evaluate(TobaccoType tobacco, CigaretteType flavor) {
         if (tobacco == null || flavor == null) return FlavorHarmony.NEUTRAL;
+        if (tobacco == TobaccoType.CARAVAN) {
+            return Set.of(CigaretteType.CARAMEL, CigaretteType.VANILLA, CigaretteType.SPICE, CigaretteType.COFFEE).contains(flavor)
+                    ? FlavorHarmony.CARAVAN_MATCHED : FlavorHarmony.CARAVAN_CLASHED;
+        }
 
         Profile profile = switch (tobacco.name()) {
             case "VIRGINIA" -> VIRGINIA;
             case "BURLEY" -> BURLEY;
             case "ORIENTAL" -> ORIENTAL;
             case "DARK_FIRED" -> DARK_FIRED;
-            default -> null;
+            case "ANCIENT" -> new Profile(Set.of(CigaretteType.HERBAL, CigaretteType.VANILLA),
+                    Set.of(CigaretteType.SHADOW, CigaretteType.SPICE));
+            default -> ADDON_PROFILES.get(tobacco.name());
         };
         if (profile == null) return FlavorHarmony.NEUTRAL;
 

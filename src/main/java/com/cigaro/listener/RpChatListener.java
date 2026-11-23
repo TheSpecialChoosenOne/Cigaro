@@ -41,7 +41,7 @@ public class RpChatListener implements Listener {
 
         int stage = data.getAddictionStage();
 
-        if (stage < 1 || plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if (stage < 1 || data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data)) return;
 
         String plainText = PlainTextComponentSerializer.plainText().serialize(event.message());
 

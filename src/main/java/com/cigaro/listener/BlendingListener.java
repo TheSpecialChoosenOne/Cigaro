@@ -2,6 +2,7 @@ package com.cigaro.listener;
 
 import com.cigaro.Cigaro;
 import com.cigaro.gui.BlendingTableGui;
+import com.cigaro.station.StationBreakCheckEvent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -49,8 +50,9 @@ public class BlendingListener implements Listener {
                 plugin.getLanguageManager().get("blending_placed"));
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
+        if (event instanceof StationBreakCheckEvent) return;
         Block block = event.getBlock();
         if (!plugin.getStationManager().isBlendingTable(block.getLocation())) return;
 

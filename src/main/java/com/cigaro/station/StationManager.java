@@ -422,6 +422,7 @@ public class StationManager implements Listener {
                         : plugin.getItemManager().createCigarette(
                                 press.tobaccoType, quality, 8, maxPuffs, maxPuffs, harmony);
 
+                if (blend == null) plugin.getItemManager().setProductTobacco(cigs, leafType);
                 loc.getWorld().dropItemNaturally(loc.clone().add(0.5, 1.2, 0.5), cigs);
                 loc.getWorld().playSound(loc, Sound.BLOCK_ANVIL_USE, 0.4f, 1.3f);
                 press.consumeItems();
@@ -521,6 +522,7 @@ public class StationManager implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSkyBlockBreak(BlockBreakEvent event) {
+        if (event instanceof StationBreakCheckEvent) return;
         invalidateSkyCacheAbove(event.getBlock());
     }
 
@@ -741,7 +743,7 @@ public class StationManager implements Listener {
         Location loc = interactionToLocation.get(interactionId);
         if (loc == null) return;
 
-        BlockBreakEvent breakCheck = new BlockBreakEvent(loc.getBlock(), player);
+        BlockBreakEvent breakCheck = new StationBreakCheckEvent(loc.getBlock(), player);
         plugin.getServer().getPluginManager().callEvent(breakCheck);
         if (breakCheck.isCancelled()) return;
 

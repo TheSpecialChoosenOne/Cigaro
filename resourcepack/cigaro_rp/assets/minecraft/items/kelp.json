@@ -90,6 +90,48 @@
           "type": "minecraft:model",
           "model": "cigaro:item/tobacco_leaf_dried_dark_fired"
         }
+      },
+      {
+        "when": "tobacco_leaf_ancient",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_ancient"
+        }
+      },
+      {
+        "when": "elite_leaf_ancient",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_ancient"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dried_ancient",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_ancient"
+        }
+      },
+      {
+        "when": "tobacco_leaf_caravan",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_caravan"
+        }
+      },
+      {
+        "when": "elite_leaf_caravan",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_caravan"
+        }
+      },
+      {
+        "when": "tobacco_leaf_dried_caravan",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_leaf_caravan"
+        }
       }
     ]
   }

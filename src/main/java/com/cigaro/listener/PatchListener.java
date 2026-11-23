@@ -72,6 +72,7 @@ public class PatchListener implements Listener {
         }
 
         data.setPatchAppliedTime(System.currentTimeMillis());
+        plugin.getWithdrawalEffectsManager().cleanup(uuid);
 
         if (player.getGameMode() != GameMode.CREATIVE) {
             item.setAmount(item.getAmount() - 1);

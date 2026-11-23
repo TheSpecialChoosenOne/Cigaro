@@ -108,11 +108,15 @@ public class ItemManager {
 
 
     public String formatTypeName(CigaretteType type) {
-        return lang().getRaw("type_" + type.name().toLowerCase());
+        String key = "type_" + type.name().toLowerCase(Locale.ROOT);
+        String name = lang().getRaw(key);
+        return name.equals(key) ? type.getDisplayName() : name;
     }
 
     public String formatTobaccoTypeName(TobaccoType type) {
-        return lang().getRaw("tobacco_" + type.name().toLowerCase());
+        String key = "tobacco_" + type.name().toLowerCase(Locale.ROOT);
+        String name = lang().getRaw(key);
+        return name.equals(key) ? type.getDisplayName() : name;
     }
 
     public String formatQualityName(CigaretteQuality quality) {
@@ -164,8 +168,10 @@ public class ItemManager {
 
         meta.displayName(trans("item_tobacco_seeds_name",
                 Placeholder.unparsed("type", formatTobaccoTypeName(type))));
-        meta.lore(transLore("item_tobacco_seeds_lore",
+        List<Component> seedLore = new ArrayList<>(transLore("item_tobacco_seeds_lore",
                 Placeholder.unparsed("speed", speed)));
+        if (type == TobaccoType.CARAVAN) seedLore.addAll(transLore("item_caravan_seeds_story"));
+        meta.lore(seedLore);
 
         setCMD(meta, "tobacco_seeds_" + type.name().toLowerCase());
 
@@ -308,7 +314,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.LEATHER, amount);
         ItemMeta meta = item.getItemMeta();
         meta.displayName(trans("item_patch_name"));
-        meta.lore(transLore("item_patch_lore"));
+        meta.lore(transLore("item_patch_lore", Placeholder.unparsed("cooldown",
+                String.valueOf(plugin.getConfigManager().getPatchCooldownMinutes()))));
         setCMD(meta, "nicotine_patch");
         meta.getPersistentDataContainer().set(CIGARO_ITEM_KEY, PersistentDataType.STRING, "nicotine_patch");
         item.setItemMeta(meta);
@@ -529,11 +536,13 @@ public class ItemManager {
                 Placeholder.unparsed("type", formatTobaccoTypeName(tobaccoType))));
 
         String eliteText = elite ? lang().getRaw("word_elite") : "";
-        meta.lore(transLore("item_leaf_lore",
+        List<Component> leafLore = new ArrayList<>(transLore("item_leaf_lore",
                 Placeholder.unparsed("type", formatTobaccoTypeName(tobaccoType)),
                 Placeholder.unparsed("elite_text", eliteText),
                 Placeholder.styling("level_color", level.getColor()),
                 Placeholder.unparsed("level_name", formatDryingLevelName(level))));
+        if (tobaccoType == TobaccoType.CARAVAN) leafLore.addAll(transLore("item_caravan_leaf_story"));
+        meta.lore(leafLore);
 
         boolean isDried = level != DryingLevel.RAW && dryingSeconds > 0;
 
@@ -1083,7 +1092,7 @@ public class ItemManager {
             TextColor contentColor;
             if (data.isBlend()) {
                 BlendData blend = data.getBlendData();
-                int pct = (int) (blend.getPrimaryRatio() * 100);
+                int pct = (int) Math.round(blend.getPrimaryRatio() * 100);
                 contentName = pct + "% " + formatTypeName(blend.getPrimary())
                         + " / " + (100 - pct) + "% " + formatTypeName(blend.getSecondary());
                 contentColor = CigaroColors.GOLD;
@@ -1160,7 +1169,7 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.DRIED_KELP, amount);
         ItemMeta meta = item.getItemMeta();
 
-        int pct = (int) (blend.getPrimaryRatio() * 100);
+        int pct = (int) Math.round(blend.getPrimaryRatio() * 100);
         String primaryName = formatTypeName(blend.getPrimary());
         String secondaryName = formatTypeName(blend.getSecondary());
 
@@ -1205,7 +1214,7 @@ public class ItemManager {
         lore.add(trans("item_blended_cut_hint"));
 
         meta.lore(lore);
-        setCMD(meta, "blended_cut_tobacco");
+        setCMD(meta, "blended_cut_tobacco_" + (cutQuality >= 2 ? "perfect" : cutQuality >= 1 ? "good" : cutQuality >= 0 ? "rough" : "bad"));
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(CIGARO_ITEM_KEY, PersistentDataType.STRING, "blended_cut_tobacco");
@@ -1337,10 +1346,7 @@ public class ItemManager {
             if (special == null) special = "none";
 
             BlendData blend = getBlendData(cig);
-            String blendField = blend != null
-                    ? blend.getPrimary().name() + "+" + blend.getSecondary().name()
-                            + "+" + String.format(java.util.Locale.US, "%.2f", blend.getPrimaryRatio())
-                    : "none";
+            String blendField = blend != null ? blend.serialize().replace(':', '+') : "none";
 
             if (!sb.isEmpty()) sb.append(";");
 
@@ -1350,7 +1356,8 @@ public class ItemManager {
                     .append(puffsMax).append(":")
                     .append(special).append(":")
                     .append(blendField).append(":")
-                    .append(getFlavorHarmony(cig).name());
+                    .append(getFlavorHarmony(cig).name()).append(":t=")
+                    .append(getProductTobacco(cig) != null ? getProductTobacco(cig).name() : "none");
         }
         return sb.toString();
     }
@@ -1369,7 +1376,7 @@ public class ItemManager {
                 int puffsMax = Integer.parseInt(parts[3]);
                 String special = (parts.length >= 5) ? parts[4] : "none";
 
-                boolean legacy = parts.length >= 8;
+                boolean legacy = parts.length >= 8 && !parts[7].startsWith("t=");
                 FlavorHarmony harmony = (!legacy && parts.length >= 7)
                         ? FlavorHarmony.fromName(parts[6])
                         : FlavorHarmony.NEUTRAL;
@@ -1378,11 +1385,7 @@ public class ItemManager {
                         ? parseLegacyBlend(parts[5])
                         : null;
                 if (!legacy && parts.length >= 6 && !parts[5].equals("none")) {
-                    String[] bf = parts[5].split("\\+");
-                    if (bf.length == 3) {
-                        blend = new BlendData(CigaretteType.valueOf(bf[0]),
-                                CigaretteType.valueOf(bf[1]), Double.parseDouble(bf[2]));
-                    }
+                    blend = BlendData.deserialize(parts[5].replace('+', ':'));
                 }
 
                 ItemStack cig;
@@ -1392,6 +1395,10 @@ public class ItemManager {
                     cig = createBlendedCigarette(blend, quality, 1, puffsLeft, puffsMax, harmony);
                 } else {
                     cig = createCigarette(type, quality, 1, puffsLeft, puffsMax, harmony);
+                }
+                if (!legacy && parts.length >= 8 && parts[7].startsWith("t=")) {
+                    String origin = parts[7].substring(2);
+                    if (!origin.equals("none")) setProductTobacco(cig, TobaccoType.valueOf(origin));
                 }
                 list.add(cig);
             } catch (Exception ignored) {}
@@ -1505,6 +1512,20 @@ public class ItemManager {
         catch (IllegalArgumentException e) { return null; }
     }
 
+    public TobaccoType getProductTobacco(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return null;
+        String id = item.getItemMeta().getPersistentDataContainer().get(TOBACCO_TYPE_KEY, PersistentDataType.STRING);
+        if (id == null) return null;
+        try { return TobaccoType.valueOf(id); } catch (IllegalArgumentException e) { return null; }
+    }
+
+    public void setProductTobacco(ItemStack item, TobaccoType type) {
+        if (item == null || type == null) return;
+        ItemMeta meta = item.getItemMeta();
+        meta.getPersistentDataContainer().set(TOBACCO_TYPE_KEY, PersistentDataType.STRING, type.name());
+        item.setItemMeta(meta);
+    }
+
     public TobaccoType getTobaccoType(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
         String val = item.getItemMeta().getPersistentDataContainer()
@@ -1583,6 +1604,10 @@ public class ItemManager {
         if (tobacco == TobaccoType.BURLEY) return CigaretteType.COFFEE;
         if (tobacco == TobaccoType.ORIENTAL) return CigaretteType.SPICE;
         if (tobacco == TobaccoType.DARK_FIRED) return CigaretteType.SHADOW;
+        if (tobacco == TobaccoType.ANCIENT) return CigaretteType.HERBAL;
+        if (tobacco == TobaccoType.CARAVAN) return CigaretteType.CARAMEL;
+        CigaretteType registered = com.cigaro.api.CigaroAPI.getRegisteredTobaccoFlavor(tobacco);
+        if (registered != null) return registered;
         return CigaretteType.MINT;
     }
 
@@ -1591,14 +1616,16 @@ public class ItemManager {
         if (type == CigaretteType.COFFEE) return TobaccoType.BURLEY;
         if (type == CigaretteType.SPICE) return TobaccoType.ORIENTAL;
         if (type == CigaretteType.SHADOW) return TobaccoType.DARK_FIRED;
+        if (type == CigaretteType.HERBAL) return TobaccoType.ANCIENT;
+        if (type == CigaretteType.CARAMEL) return TobaccoType.CARAVAN;
         return null;
     }
 
     public double getBlendLeafQualityBonus(BlendData blend) {
         if (blend == null) return 0.0;
 
-        TobaccoType primaryTobacco = cigaretteTypeToTobaccoType(blend.getPrimary());
-        TobaccoType secondaryTobacco = cigaretteTypeToTobaccoType(blend.getSecondary());
+        TobaccoType primaryTobacco = blend.getPrimaryTobacco() != null ? blend.getPrimaryTobacco() : cigaretteTypeToTobaccoType(blend.getPrimary());
+        TobaccoType secondaryTobacco = blend.getSecondaryTobacco() != null ? blend.getSecondaryTobacco() : cigaretteTypeToTobaccoType(blend.getSecondary());
         double primaryBonus = primaryTobacco != null ? primaryTobacco.getQualityBonus() : 0.0;
         double secondaryBonus = secondaryTobacco != null ? secondaryTobacco.getQualityBonus() : 0.0;
 

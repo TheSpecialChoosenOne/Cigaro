@@ -13,6 +13,7 @@ messages:
 # --- TOBACCO FARMING ---
 tobacco:
   elite-leaf-chance: 0.05     # 5% base chance to get an Elite Leaf on harvest
+  ancient-loot-chance: 0.08   # Chance per eligible archaeology block or structure chest
   bone-meal-enabled: true     # Can players use bonemeal? (Has a chance to burn the plant)
   seed-drop-chance: 0.005     # Chance to drop seeds from grass OUTSIDE a type's native biome.
                               # Inside a native biome the per-type chance (5%) is used instead.
@@ -180,7 +181,7 @@ addiction:
   stage4-threshold: 70        # Addiction points needed for Stage 4 (Severe)
   withdrawal-check-seconds: 60 # How often to check for withdrawal symptoms
   withdrawal-grace-minutes: 25 # How long the player feels "fine" after a smoke
-  quit-time-hours: 4          # IN-GAME hours sober required to drop ONE addiction stage. (e.g. Stage 4 to 0 = 16 hours)
+  quit-time-hours: 4          # Sets decay rate: max score to zero takes 4x this many active online hours after grace; stage thresholds are uneven.
 
 # --- TOLERANCE MECHANICS ---
 tolerance:

@@ -1,0 +1,13 @@
+{
+  "item_patch_lore": [
+    "<c_smoke>Eases withdrawal symptoms",
+    "",
+    "<c_ash>• Reduces symptoms for 10 min",
+    "<c_ember>• Does NOT cure addiction",
+    "<c_ash>• 30 min cooldown",
+    "",
+    "<c_ash>Right-click to apply"
+  ],
+  "patch_applied": "<c_success>Patch applied. Symptoms eased for 10 minutes.",
+  "patch_not_cure": "<i><c_ash>This won't cure your addiction. It only delays the inevitable."
+}

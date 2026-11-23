@@ -88,16 +88,15 @@ public class PipeData {
 
         try {
             if (parts[0].equals("BLEND") && parts.length >= 8) {
-                CigaretteType a = CigaretteType.valueOf(parts[1]);
-                CigaretteType b = CigaretteType.valueOf(parts[2]);
-                double ratio = Double.parseDouble(parts[3]);
+                BlendData blend = BlendData.deserialize(parts[1] + ":" + parts[2] + ":" + parts[3]);
+                if (blend == null) return null;
                 int charges = Integer.parseInt(parts[4]);
                 int maxCharges = Integer.parseInt(parts[5]);
                 int dur = Integer.parseInt(parts[6]);
                 int maxDur = Integer.parseInt(parts[7]);
 
                 PipeData pd = new PipeData(dur, maxDur);
-                pd.loadBlend(new BlendData(a, b, ratio), maxCharges);
+                pd.loadBlend(blend, maxCharges);
                 pd.chargesLeft = charges;
                 return pd;
             }

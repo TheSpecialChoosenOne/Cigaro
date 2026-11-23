@@ -42,6 +42,7 @@ public class SmokingListener implements Listener {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Map<UUID, BukkitTask> smokeTrailTasks = new HashMap<>();
     private final Set<UUID> lightingCigar = new HashSet<>();
+    private final Map<UUID, Object> cigarActions = new HashMap<>();
     private final Map<UUID, SmokingSession> activeSessions = new HashMap<>();
 
     private static final long PUFF_COOLDOWN_FALLBACK = 2500;
@@ -71,6 +72,8 @@ public class SmokingListener implements Listener {
         long lastActivity;
 
         BlendData blend;
+        ItemStack expectedItem;
+        TobaccoType sourceTobacco;
 
         SmokingSession(CigaretteType type, CigaretteQuality quality,
                        int puffsLeft, int puffsMax, int heldSlot, String specialType,
@@ -111,10 +114,25 @@ public class SmokingListener implements Listener {
     }
 
     private boolean isHotMaterial(Material mat) {
-        String name = mat.name();
-        return name.equals("LAVA_BUCKET") || name.contains("CAMPFIRE") || name.contains("MAGMA") ||
-                name.contains("TORCH") || name.contains("LANTERN") || name.equals("FIRE") ||
-                name.equals("SOUL_FIRE") || name.equals("LAVA");
+        return switch (mat) {
+            case LAVA_BUCKET, LAVA, MAGMA_BLOCK, FIRE, SOUL_FIRE,
+                    TORCH, WALL_TORCH, SOUL_TORCH, SOUL_WALL_TORCH,
+                    LANTERN, SOUL_LANTERN, BLAZE_ROD -> true;
+            default -> false;
+        };
+    }
+
+    private boolean isHotBlock(Block block) {
+        if (block == null) return false;
+        if (block.getBlockData() instanceof org.bukkit.block.data.Lightable lightable) {
+            Material type = block.getType();
+            String name = type.name();
+            if (type == Material.CAMPFIRE || type == Material.SOUL_CAMPFIRE
+                    || type == Material.FURNACE || type == Material.BLAST_FURNACE || type == Material.SMOKER
+                    || name.endsWith("_CANDLE") || name.endsWith("_CANDLE_CAKE")
+                    || type == Material.CANDLE || type == Material.CANDLE_CAKE) return lightable.isLit();
+        }
+        return isHotMaterial(block.getType());
     }
 
     private boolean hasFireSource(Player player, Block clickedBlock) {
@@ -138,13 +156,14 @@ public class SmokingListener implements Listener {
             return true;
         }
         if (isHotMaterial(offMat)) return true;
-        if (clickedBlock != null && isHotMaterial(clickedBlock.getType())) return true;
+        if (isHotBlock(clickedBlock)) return true;
         return false;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDropWhileSmoking(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
+        cancelCigarAction(player.getUniqueId());
         SmokingSession session = activeSessions.get(player.getUniqueId());
         if (session != null) {
             dropSession(player.getUniqueId());
@@ -154,6 +173,7 @@ public class SmokingListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSwapWhileSmoking(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
+        cancelCigarAction(player.getUniqueId());
         SmokingSession session = activeSessions.get(player.getUniqueId());
         if (session != null) {
             dropSession(player.getUniqueId());
@@ -163,9 +183,31 @@ public class SmokingListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSlotChangeWhileSmoking(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
+        cancelCigarAction(player.getUniqueId());
         SmokingSession session = activeSessions.get(player.getUniqueId());
         if (session != null) {
             dropSession(player.getUniqueId());
+        }
+    }
+
+    private void cancelCigarAction(UUID uuid) {
+        cigarActions.remove(uuid);
+        lightingCigar.remove(uuid);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryMoveWhileSmoking(org.bukkit.event.inventory.InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player player) {
+            dropSession(player.getUniqueId());
+            cancelCigarAction(player.getUniqueId());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryDragWhileSmoking(org.bukkit.event.inventory.InventoryDragEvent event) {
+        if (event.getWhoClicked() instanceof Player player) {
+            dropSession(player.getUniqueId());
+            cancelCigarAction(player.getUniqueId());
         }
     }
 
@@ -196,6 +238,7 @@ public class SmokingListener implements Listener {
 
         UUID uuid = player.getUniqueId();
         ItemStack item = mainItem;
+        if (lightingCigar.contains(uuid)) { event.setCancelled(true); return; }
 
         SmokingSession session = activeSessions.get(uuid);
         if (session != null && !isSessionValid(player, session)) {
@@ -255,6 +298,12 @@ public class SmokingListener implements Listener {
             return;
         }
 
+        long remainingCooldown = puffCooldown() - (System.currentTimeMillis() - cooldowns.getOrDefault(uuid, 0L));
+        if (remainingCooldown > 0) {
+            sendPuffCooldownFeedback(player, item, remainingCooldown);
+            return;
+        }
+
         boolean needsFire = (puffsLeft == puffsMax) || plugin.getItemManager().isExtinguished(item);
         if (needsFire && !hasFireSource(player, event.getClickedBlock())) {
             player.sendActionBar(lang().get("smoke_need_fire"));
@@ -293,7 +342,10 @@ public class SmokingListener implements Listener {
                 specialType, harmony);
 
         session.blend = plugin.getItemManager().getBlendData(item);
+        session.sourceTobacco = plugin.getItemManager().getProductTobacco(item);
 
+        plugin.getItemManager().setExtinguished(item, false);
+        session.expectedItem = item.clone();
         activeSessions.put(uuid, session);
 
         if (!"smokescreen".equals(specialType)) {
@@ -305,7 +357,6 @@ public class SmokingListener implements Listener {
         }
 
         spawnLightingFlame(player);
-        plugin.getItemManager().setExtinguished(item, false);
 
         cooldowns.put(uuid, System.currentTimeMillis());
         performPuff(player, session);
@@ -314,16 +365,19 @@ public class SmokingListener implements Listener {
     private void startCigarLighting(Player player, ItemStack item, UUID uuid,
                                     CigaretteType type, CigaretteQuality quality) {
         lightingCigar.add(uuid);
+        Object action = new Object();
+        cigarActions.put(uuid, action);
+        int heldSlot = player.getInventory().getHeldItemSlot();
+        plugin.getItemManager().setExtinguished(item, false);
+        ItemStack expected = item.clone();
         player.playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 0.5f, 0.8f);
 
         String lightingText = lang().getRaw("smoke_cigar_lighting");
         BlendData blend = plugin.getItemManager().getBlendData(item);
         FlavorHarmony harmony = plugin.getItemManager().getFlavorHarmony(item);
+        TobaccoType origin = plugin.getItemManager().getProductTobacco(item);
 
-        consumeCigar(player);
         spawnEmber(player);
-        applyCigarEffects(player, type, quality, blend, harmony);
-        plugin.getAnalyticsManager().recordSmoke("cigar", type);
         cooldowns.put(uuid, System.currentTimeMillis());
         player.setCooldown(Material.BLAZE_ROD, (int) (puffCooldown() / 50));
 
@@ -334,16 +388,20 @@ public class SmokingListener implements Listener {
 
             @Override
             public void run() {
-                if (!player.isOnline() || isWet(player)) {
-                    lightingCigar.remove(uuid);
-                    if (player.isOnline() && isWet(player)) {
-                        player.sendActionBar(lang().get("smoke_cigar_water_cut_short"));
-                    }
-                    this.cancel();
-                    return;
+                if (cigarActions.get(uuid) != action || !player.isOnline() || player.isDead()
+                        || player.getInventory().getHeldItemSlot() != heldSlot
+                        || !expected.equals(player.getInventory().getItem(heldSlot))) {
+                    if (cigarActions.get(uuid) == action) cancelCigarAction(uuid);
+                    this.cancel(); return;
+                }
+                if (isWet(player)) {
+                    plugin.getItemManager().setExtinguished(player.getInventory().getItem(heldSlot), true);
+                    cancelCigarAction(uuid);
+                    player.sendActionBar(lang().get("smoke_cigar_water_cut_short"));
+                    this.cancel(); return;
                 }
 
-                ticks += 5;
+                ticks++;
 
                 if (ticks < maxTicks) {
                     if (ticks % 15 == 0) {
@@ -355,7 +413,12 @@ public class SmokingListener implements Listener {
                     String progress = "  [" + "■".repeat(bars) + "□".repeat(5 - bars) + "] " + lightingText + "  ";
                     player.sendActionBar(Component.text(progress).color(CigaroColors.EMBER));
                 } else {
-                    lightingCigar.remove(uuid);
+                    cancelCigarAction(uuid);
+                    consumeCigar(player);
+                    applyCigarEffects(player, type, quality, blend, harmony, origin);
+                    plugin.getAnalyticsManager().recordSmoke("cigar", type);
+                    plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                            com.cigaro.api.CigaroTobaccoEvent.Action.CIGAR_SMOKED, player, player.getLocation(), expected));
                     spawnFinalExhale(player);
                     spawnEmber(player);
                     player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.4f, 0.8f);
@@ -363,7 +426,7 @@ public class SmokingListener implements Listener {
                     this.cancel();
                 }
             }
-        }.runTaskTimer(plugin, 0L, 5L);
+        }.runTaskTimer(plugin, 1L, 1L);
     }
 
     private void consumeCigar(Player player) {
@@ -381,58 +444,54 @@ public class SmokingListener implements Listener {
 
     private void performPuff(Player player, SmokingSession session) {
         UUID uuid = player.getUniqueId();
-        ItemStack currentItem = player.getInventory().getItem(session.heldSlot);
-        if (currentItem == null || !plugin.getItemManager().isCigarette(currentItem)) {
-            dropSession(uuid);
-            return;
+        if (!isSessionValid(player, session) || player.getInventory().getHeldItemSlot() != session.heldSlot) {
+            dropSession(uuid); return;
         }
-
-        ItemStack snapshotForEvent = currentItem.clone();
-
-        session.puffsLeft--;
         session.inAnimation = true;
         session.lastActivity = System.currentTimeMillis();
-
-        final boolean isFinalPuff = session.puffsLeft <= 0;
-
-        if (isFinalPuff) {
-            player.getInventory().setItem(session.heldSlot, null);
-            activeSessions.remove(uuid);
-            cooldowns.remove(uuid);
-        } else {
-            updateHandItem(player, session);
-        }
-
-        plugin.getServer().getPluginManager().callEvent(new CigaroPuffEvent(
-                player, snapshotForEvent, Math.max(0, session.puffsLeft)));
-
         spawnEmber(player);
         player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.15f, 2.0f);
-        plugin.getFireHazardManager().checkFireRisk(player);
         player.setCooldown(Material.STICK, (int) (puffCooldown() / 50));
-
-        String bar = buildPuffBar(Math.max(0, session.puffsLeft), session.puffsMax);
-        player.sendActionBar(Component.text(bar).color(CigaroColors.EMBER)
-                .decoration(TextDecoration.ITALIC, false));
+        player.sendActionBar(Component.text(buildPuffBar(session.puffsLeft, session.puffsMax))
+                .color(CigaroColors.EMBER).decoration(TextDecoration.ITALIC, false));
 
         int animationTicks = Math.max(1, plugin.getConfigManager().getCigaretteAnimationTicks());
-
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            session.inAnimation = false;
-            if (!player.isOnline()) return;
-
-            spawnExhale(player);
-            player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.2f, 1.2f);
-
-            if (isFinalPuff) {
-                completeCigaretteSmoke(player, session);
+        new BukkitRunnable() {
+            int ticks;
+            @Override public void run() {
+                if (activeSessions.get(uuid) != session || !player.isOnline() || player.isDead()
+                        || player.getInventory().getHeldItemSlot() != session.heldSlot
+                        || !isSessionValid(player, session)) {
+                    if (activeSessions.get(uuid) == session) dropSession(uuid);
+                    cancel(); return;
+                }
+                if (isWet(player)) {
+                    plugin.getItemManager().setExtinguished(player.getInventory().getItem(session.heldSlot), true);
+                    dropSession(uuid);
+                    player.sendActionBar(lang().get("smoke_extinguished_water"));
+                    cancel(); return;
+                }
+                if (++ticks < animationTicks) return;
+                ItemStack snapshot = player.getInventory().getItem(session.heldSlot).clone();
+                session.puffsLeft--;
+                session.inAnimation = false;
+                session.lastActivity = System.currentTimeMillis();
+                boolean last = session.puffsLeft <= 0;
+                if (last) {
+                    player.getInventory().setItem(session.heldSlot, null);
+                    activeSessions.remove(uuid);
+                } else updateHandItem(player, session);
+                plugin.getServer().getPluginManager().callEvent(new CigaroPuffEvent(player, snapshot, Math.max(0, session.puffsLeft)));
+                plugin.getFireHazardManager().checkFireRisk(player);
+                spawnExhale(player);
+                player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.2f, 1.2f);
+                if (last) completeCigaretteSmoke(player, session);
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    if (player.isOnline()) spawnAshParticle(player);
+                }, 40L);
+                cancel();
             }
-        }, animationTicks);
-
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (!player.isOnline()) return;
-            spawnAshParticle(player);
-        }, 40L);
+        }.runTaskTimer(plugin, 1L, 1L);
     }
 
     private void completeCigaretteSmoke(Player player, SmokingSession session) {
@@ -461,16 +520,14 @@ public class SmokingListener implements Listener {
     }
 
     private boolean isSessionValid(Player player, SmokingSession session) {
-        if (session.inAnimation) return true;
         long timeoutMs = plugin.getConfigManager().getSessionTimeoutSeconds() * 1000L;
         if (timeoutMs > 0 && System.currentTimeMillis() - session.lastActivity > timeoutMs) return false;
         ItemStack inSlot = player.getInventory().getItem(session.heldSlot);
-        return inSlot != null && plugin.getItemManager().isCigarette(inSlot);
+        return inSlot != null && inSlot.equals(session.expectedItem);
     }
 
     private void dropSession(UUID uuid) {
         activeSessions.remove(uuid);
-        cooldowns.remove(uuid);
     }
 
     private void spawnAshParticle(Player player) {
@@ -494,7 +551,9 @@ public class SmokingListener implements Listener {
                 updated = plugin.getItemManager().createCigarette(session.type, session.quality,
                         1, session.puffsLeft, session.puffsMax, session.harmony);
             }
+            plugin.getItemManager().setProductTobacco(updated, session.sourceTobacco);
             player.getInventory().setItem(session.heldSlot, updated);
+            session.expectedItem = updated.clone();
         }
     }
 
@@ -502,8 +561,7 @@ public class SmokingListener implements Listener {
         activeSessions.remove(uuid);
         BukkitTask trail = smokeTrailTasks.remove(uuid);
         if (trail != null) trail.cancel();
-        cooldowns.remove(uuid);
-        lightingCigar.remove(uuid);
+        cancelCigarAction(uuid);
     }
 
     @EventHandler
@@ -591,6 +649,9 @@ public class SmokingListener implements Listener {
         double sessionBonus = 1.0;
         if (timeSinceSmoke > 7200000) sessionBonus = 1.6;
         else if (timeSinceSmoke > 1800000) sessionBonus = 1.3;
+        else if (timeSinceSmoke >= 600000 && (session.sourceTobacco == TobaccoType.ANCIENT
+                || (session.blend != null && ((session.blend.getPrimaryTobacco() == TobaccoType.ANCIENT && session.blend.getPrimaryRatio() >= 0.3)
+                || (session.blend.getSecondaryTobacco() == TobaccoType.ANCIENT && session.blend.getSecondaryRatio() >= 0.3))))) sessionBonus = 1.15;
 
         if (predisposition <= -2) {
             applyCatastrophicReaction(player, session.quality);
@@ -968,7 +1029,7 @@ public class SmokingListener implements Listener {
     }
 
     private void applyCigarEffects(Player player, CigaretteType type, CigaretteQuality quality,
-                                   BlendData blend, FlavorHarmony harmony) {
+                                   BlendData blend, FlavorHarmony harmony, TobaccoType origin) {
         if (harmony == null) harmony = FlavorHarmony.NEUTRAL;
         UUID uuid = player.getUniqueId();
         PlayerData data = plugin.getPlayerDataManager().getData(uuid);
@@ -991,6 +1052,10 @@ public class SmokingListener implements Listener {
         } else {
             double finalMult = cigarMult * tolMult * qualMult * (pred >= 0 ? 1.0 : 0.3)
                     * harmony.getEffectMultiplier();
+            long sinceSmoke = System.currentTimeMillis() - data.getLastSmokeTime();
+            boolean ancient = origin == TobaccoType.ANCIENT || (blend != null
+                    && (blend.getPrimaryTobacco() == TobaccoType.ANCIENT || blend.getSecondaryTobacco() == TobaccoType.ANCIENT));
+            if (ancient && sinceSmoke >= 600000 && sinceSmoke <= 1800000) finalMult *= 1.15;
             boolean isFav = pred >= 2;
 
             if (blend != null) {

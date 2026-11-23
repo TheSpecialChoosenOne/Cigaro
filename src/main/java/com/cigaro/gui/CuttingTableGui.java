@@ -5,6 +5,8 @@ import com.cigaro.CigaroColors;
 import com.cigaro.data.DryingLevel;
 import com.cigaro.data.TobaccoType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -38,10 +40,24 @@ public class CuttingTableGui extends CigaroGui {
     private static final int[] BAR_SLOTS = {28, 29, 30, 31, 32, 33, 34};
 
     public CuttingTableGui(Player player, Cigaro plugin) {
-        super(player, plugin.getLanguageManager().get("gui_cutting_title")
-                .decoration(TextDecoration.ITALIC, false), 5);
+        super(player, Component.text("\ue001\ue000\ue002\ue003")
+                .font(Key.key("cigaro:blending"))
+                .color(NamedTextColor.WHITE)
+                .append(plugin.getLanguageManager().get("gui_cutting_title")
+                        .font(Key.key("minecraft:default"))
+                        .decoration(TextDecoration.ITALIC, false)), 5);
         this.plugin = plugin;
         randomizeGreenZone();
+    }
+
+    private ItemStack icon(String model, Component name, Component... lore) {
+        ItemStack item = createGuiItem(Material.PAPER, name, lore);
+        var meta = item.getItemMeta();
+        var data = meta.getCustomModelDataComponent();
+        data.setStrings(List.of(model));
+        meta.setCustomModelDataComponent(data);
+        item.setItemMeta(meta);
+        return item;
     }
 
     private Component msg(String key, TagResolver... p) {
@@ -72,22 +88,26 @@ public class CuttingTableGui extends CigaroGui {
 
     @Override
     protected void buildGui() {
-        ItemStack filler = createGuiItem(Material.GRAY_STAINED_GLASS_PANE, Component.empty());
-        for (int i = 0; i < inventory.getSize(); i++) inventory.setItem(i, filler);
+        ItemStack frame = icon("gui_blend_frame", Component.empty());
+        ItemStack panel = icon("gui_blend_panel", Component.empty());
+        for (int i = 0; i < inventory.getSize(); i++) inventory.setItem(i, frame);
+        for (int slot : new int[]{1, 2, 3, 4, 5, 6, 7, 11, 13, 15, 19, 20, 21, 22, 23, 24, 25, 37, 38, 39, 41, 42, 43}) {
+            inventory.setItem(slot, panel);
+        }
 
-        inventory.setItem(SLOT_INFO, createGuiItem(Material.PAPER,
+        inventory.setItem(SLOT_INFO, icon("gui_blend_info",
                 msg("gui_cutting_info_name"),
                 msgLore("gui_cutting_info_lore").toArray(new Component[0])));
 
         inventory.setItem(SLOT_INPUT, null);
         updateCounter();
 
-        inventory.setItem(SLOT_OUTPUT, createGuiItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE,
+        inventory.setItem(SLOT_OUTPUT, icon("gui_blend_empty",
                 msg("gui_cutting_results_empty"), msg("gui_cutting_results_empty_lore")));
 
         updateBar();
 
-        inventory.setItem(SLOT_CUT, createGuiItem(Material.IRON_INGOT,
+        inventory.setItem(SLOT_CUT, icon("gui_cut_knife_idle",
                 msg("gui_cutting_cut_idle"), msg("gui_cutting_cut_idle_lore")));
     }
 
@@ -127,7 +147,7 @@ public class CuttingTableGui extends CigaroGui {
             gameStarted = true;
             randomizeGreenZone();
             startAnimation();
-            inventory.setItem(SLOT_CUT, createGuiItem(Material.GOLD_INGOT,
+            inventory.setItem(SLOT_CUT, icon("gui_cut_knife_active",
                     msg("gui_cutting_cut_active"), msg("gui_cutting_cut_active_lore")));
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 1f);
             return;
@@ -151,7 +171,10 @@ public class CuttingTableGui extends CigaroGui {
         else if (nearGreen) { bonusQuality = 1; player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 0.8f); }
         else { bonusQuality = -1; player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3f, 0.5f); }
 
-        pendingResults.add(plugin.getItemManager().createCutTobacco(tobaccoType, elite, dryingLevel, dryingSeconds, bonusQuality));
+        ItemStack cutResult = plugin.getItemManager().createCutTobacco(tobaccoType, elite, dryingLevel, dryingSeconds, bonusQuality);
+        pendingResults.add(cutResult);
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.CUT, player, player.getLocation(), cutResult));
         plugin.getPlayerDataManager().getData(player.getUniqueId()).addMastery(0.005);
 
         updateOutputDisplay();
@@ -162,21 +185,22 @@ public class CuttingTableGui extends CigaroGui {
                 && plugin.getItemManager().isDriedTobaccoLeaf(remaining)) {
             randomizeGreenZone();
             startAnimation();
-            inventory.setItem(SLOT_CUT, createGuiItem(Material.GOLD_INGOT,
+            inventory.setItem(SLOT_CUT, icon("gui_cut_knife_active",
                     msg("gui_cutting_cut_active"), msg("gui_cutting_cut_next_lore")));
         } else {
             gameStarted = false;
-            inventory.setItem(SLOT_CUT, createGuiItem(Material.IRON_INGOT,
+            updateBar();
+            inventory.setItem(SLOT_CUT, icon("gui_cut_knife_idle",
                     msg("gui_cutting_cut_idle"), msg("gui_cutting_cut_done_lore")));
         }
     }
 
     private void updateOutputDisplay() {
         if (pendingResults.isEmpty()) {
-            inventory.setItem(SLOT_OUTPUT, createGuiItem(Material.LIGHT_GRAY_STAINED_GLASS_PANE,
+            inventory.setItem(SLOT_OUTPUT, icon("gui_blend_empty",
                     msg("gui_cutting_results_empty"), msg("gui_cutting_results_empty_lore")));
         } else {
-            inventory.setItem(SLOT_OUTPUT, createGuiItem(Material.CHEST,
+            inventory.setItem(SLOT_OUTPUT, icon("gui_blend_preview",
                     msg("gui_cutting_results_ready",
                             Placeholder.unparsed("count", String.valueOf(pendingResults.size()))),
                     msg("gui_cutting_results_lore")));
@@ -186,7 +210,7 @@ public class CuttingTableGui extends CigaroGui {
     private void updateCounter() {
         ItemStack input = inventory.getItem(SLOT_INPUT);
         int remaining = (input != null && plugin.getItemManager().isTobaccoLeaf(input)) ? input.getAmount() : 0;
-        inventory.setItem(SLOT_COUNTER, createGuiItem(Material.ARROW,
+        inventory.setItem(SLOT_COUNTER, icon("gui_cut_counter",
                 msg("gui_cutting_counter",
                         Placeholder.unparsed("remaining", String.valueOf(remaining)),
                         Placeholder.unparsed("results", String.valueOf(pendingResults.size())))));
@@ -207,13 +231,11 @@ public class CuttingTableGui extends CigaroGui {
 
     private void updateBar() {
         for (int i = 0; i < 7; i++) {
-            Material mat;
-            String label;
-            if (i == cursorPos && gameStarted) { mat = Material.WHITE_STAINED_GLASS_PANE; label = "|"; }
-            else if (i >= greenStart && i <= greenEnd) { mat = Material.LIME_STAINED_GLASS_PANE; label = " "; }
-            else { mat = Material.BLACK_STAINED_GLASS_PANE; label = " "; }
-            inventory.setItem(BAR_SLOTS[i], createGuiItem(mat,
-                    Component.text(label).color(CigaroColors.ASH).decoration(TextDecoration.ITALIC, false)));
+            boolean target = i >= greenStart && i <= greenEnd;
+            String model = i == cursorPos && gameStarted
+                    ? (target ? "gui_cut_pointer_target" : "gui_cut_pointer_track")
+                    : (target ? "gui_cut_target" : "gui_cut_track");
+            inventory.setItem(BAR_SLOTS[i], icon(model, Component.empty()));
         }
     }
 

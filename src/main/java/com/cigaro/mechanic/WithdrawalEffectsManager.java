@@ -1,6 +1,7 @@
 package com.cigaro.mechanic;
 
 import com.cigaro.Cigaro;
+import com.cigaro.station.StationBreakCheckEvent;
 import com.cigaro.data.CigaroAchievement;
 import com.cigaro.data.PlayerData;
 import org.bukkit.*;
@@ -70,7 +71,7 @@ public class WithdrawalEffectsManager implements Listener {
         UUID uuid = player.getUniqueId();
         PlayerData data = plugin.getPlayerDataManager().getData(uuid);
 
-        if (data.getAddictionStage() < 2 || plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if (data.getAddictionStage() < 2 || (data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         int oldFood = player.getFoodLevel();
         int newFood = event.getFoodLevel();
@@ -92,7 +93,7 @@ public class WithdrawalEffectsManager implements Listener {
         Player player = event.getPlayer();
         PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
 
-        if (data.getAddictionStage() < 2 || plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if (data.getAddictionStage() < 2 || (data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         if (random.nextDouble() <= 0.30) {
             event.setCancelled(true);
@@ -108,7 +109,7 @@ public class WithdrawalEffectsManager implements Listener {
         if (event.getCause() != EntityDamageEvent.DamageCause.FALL) return;
 
         PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
-        if (data.getAddictionStage() < 2 || plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if (data.getAddictionStage() < 2 || (data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         if (random.nextDouble() <= 0.20) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 2, true, false, false));
@@ -121,7 +122,7 @@ public class WithdrawalEffectsManager implements Listener {
         Player player = event.getPlayer();
         PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
 
-        if (data.getAddictionStage() < 2 || plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if (data.getAddictionStage() < 2 || (data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         if (random.nextDouble() <= 0.05) {
             event.setCancelled(true);
@@ -132,6 +133,7 @@ public class WithdrawalEffectsManager implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreakGlitch(BlockBreakEvent event) {
+        if (event instanceof StationBreakCheckEvent) return;
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         PlayerData data = plugin.getPlayerDataManager().getData(uuid);
@@ -165,7 +167,7 @@ public class WithdrawalEffectsManager implements Listener {
         int stage = data.getAddictionStage();
 
         if (stage < 2) return;
-        if (plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if ((data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         double missChance = switch (stage) {
             case 2 -> 0.05;
@@ -205,7 +207,7 @@ public class WithdrawalEffectsManager implements Listener {
             PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
             int stage = data.getAddictionStage();
             if (stage < 2) continue;
-            if (plugin.getWithdrawalTask().isInGracePeriod(data)) continue;
+            if ((data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) continue;
 
             applyAimShake(player, stage);
         }
@@ -218,7 +220,7 @@ public class WithdrawalEffectsManager implements Listener {
             PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
             int stage = data.getAddictionStage();
             if (stage < 3) continue;
-            if (plugin.getWithdrawalTask().isInGracePeriod(data)) continue;
+            if ((data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) continue;
 
             tickFakeOres(player, stage);
         }
@@ -252,7 +254,7 @@ public class WithdrawalEffectsManager implements Listener {
 
         int stage = data.getAddictionStage();
         if (stage < 3) return;
-        if (plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if ((data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         double interruptChance = switch (stage) {
             case 3 -> 0.06;
@@ -271,7 +273,7 @@ public class WithdrawalEffectsManager implements Listener {
         int delay = 10 + random.nextInt(20);
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (!player.isOnline()) return;
+            if (!player.isOnline() || plugin.getPlayerDataManager().getData(player.getUniqueId()).isPatchActive()) return;
             if (!player.isSneaking() && player.getTargetBlockExact(5) != null) {
                 interruptMining(player, stage);
             }
@@ -402,7 +404,7 @@ public class WithdrawalEffectsManager implements Listener {
 
         int stage = data.getAddictionStage();
         if (stage < 2) return;
-        if (plugin.getWithdrawalTask().isInGracePeriod(data)) return;
+        if ((data.isPatchActive() || plugin.getWithdrawalTask().isInGracePeriod(data))) return;
 
         double deviateChance = switch (stage) {
             case 2 -> 0.08;

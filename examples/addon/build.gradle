@@ -1,0 +1,7 @@
+plugins { id 'java' }
+repositories { mavenCentral(); maven { url = 'https://repo.papermc.io/repository/maven-public/' } }
+dependencies {
+    compileOnly files('../../build/libs/Cigaro-1.1.0.jar')
+    compileOnly 'io.papermc.paper:paper-api:26.3.build.211-stable'
+}
+java { toolchain.languageVersion = JavaLanguageVersion.of(25) }

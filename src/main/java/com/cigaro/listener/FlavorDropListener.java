@@ -1,6 +1,7 @@
 package com.cigaro.listener;
 
 import com.cigaro.Cigaro;
+import com.cigaro.station.StationBreakCheckEvent;
 import com.cigaro.data.CigaretteType;
 import com.cigaro.data.TobaccoType;
 import org.bukkit.Material;
@@ -27,6 +28,7 @@ public class FlavorDropListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (event instanceof StationBreakCheckEvent) return;
         if (event.isCancelled()) return;
 
         Block block = event.getBlock();
@@ -73,8 +75,8 @@ public class FlavorDropListener implements Listener {
         }
 
         if (selectedType == null) {
-            if (roll < globalChance * TobaccoType.values().size()) {
-                TobaccoType[] typesArr = TobaccoType.getRandomTypes();
+            TobaccoType[] typesArr = TobaccoType.getRandomTypes();
+            if (typesArr.length > 0 && roll < globalChance * typesArr.length) {
                 selectedType = typesArr[random.nextInt(typesArr.length)];
             }
         }

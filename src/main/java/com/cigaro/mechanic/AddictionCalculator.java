@@ -30,6 +30,8 @@ public class AddictionCalculator {
                          boolean wasInWithdrawal,
                          double pointsMultiplier) {
         long now = System.currentTimeMillis();
+        Player habitPlayer = Bukkit.getPlayer(data.getUuid());
+        if (habitPlayer != null && habitPlayer.isOnline()) plugin.getHabitManager().recordSmoke(habitPlayer, data);
 
         if (now - data.getLastSessionStart() > SESSION_MS) {
             data.setLastSessionStart(now);
@@ -69,9 +71,12 @@ public class AddictionCalculator {
         double physicalPoints = calculatePhysicalPoints(data, quality) * pointsMultiplier;
         double psychologicalPoints = calculatePsychologicalPoints(data, type, wasInWithdrawal) * pointsMultiplier;
 
+        double oldPhysical = data.getPhysicalScore(), oldPsychological = data.getPsychologicalScore();
         data.setPhysicalScore(data.getPhysicalScore() + physicalPoints);
         data.setPsychologicalScore(data.getPsychologicalScore() + psychologicalPoints);
 
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroAddictionChangeEvent(
+                data.getUuid(), oldPhysical, oldPsychological, data.getPhysicalScore(), data.getPsychologicalScore()));
         data.setPhysicalSoberSeconds(0);
         data.setPsychologicalSoberSeconds(0);
 

@@ -1,0 +1,5 @@
+name: CigaroExampleAddon
+version: 1.0.0
+main: example.ExampleAddon
+api-version: '26.3'
+depend: [Cigaro]

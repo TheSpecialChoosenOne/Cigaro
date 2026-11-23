@@ -7,7 +7,7 @@
       "type": "minecraft:model",
       "model": "minecraft:item/paper"
     },
-    "cases":[
+    "cases": [
       {
         "when": "cigarette_paper",
         "model": {
@@ -125,6 +125,209 @@
         "model": {
           "type": "minecraft:model",
           "model": "cigaro:item/tobacco_crop_dark_fired_stage3"
+        }
+      },
+      {
+        "when": "gui_blend_info",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_info"
+        }
+      },
+      {
+        "when": "gui_blend_scales",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_scales"
+        }
+      },
+      {
+        "when": "gui_blend_empty",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_empty"
+        }
+      },
+      {
+        "when": "gui_blend_ready",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_ready"
+        }
+      },
+      {
+        "when": "gui_blend_idle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_idle"
+        }
+      },
+      {
+        "when": "gui_blend_input",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_input"
+        }
+      },
+      {
+        "when": "gui_blend_panel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_panel"
+        }
+      },
+      {
+        "when": "gui_blend_frame",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_frame"
+        }
+      },
+      {
+        "when": "gui_blend_error",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_error"
+        }
+      },
+      {
+        "when": "gui_blend_preview",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_blend_preview"
+        }
+      },
+      {
+        "when": "gui_cut_knife_active",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_knife_active"
+        }
+      },
+      {
+        "when": "gui_cut_knife_idle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_knife_idle"
+        }
+      },
+      {
+        "when": "gui_cut_counter",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_counter"
+        }
+      },
+      {
+        "when": "gui_cut_pointer",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_pointer"
+        }
+      },
+      {
+        "when": "gui_cut_target",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_target"
+        }
+      },
+      {
+        "when": "gui_cut_track",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_track"
+        }
+      },
+      {
+        "when": "gui_cut_pointer_target",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_pointer_target"
+        }
+      },
+      {
+        "when": "gui_cut_pointer_track",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_cut_pointer_track"
+        }
+      },
+      {
+        "when": "gui_stats_overview",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_stats_overview"
+        }
+      },
+      {
+        "when": "gui_stats_tolerance",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_stats_tolerance"
+        }
+      },
+      {
+        "when": "gui_stats_predisposition",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/gui_stats_predisposition"
+        }
+      },
+      {
+        "when": "tobacco_crop_ancient_stage0",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_ancient_stage0"
+        }
+      },
+      {
+        "when": "tobacco_crop_ancient_stage1",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_ancient_stage1"
+        }
+      },
+      {
+        "when": "tobacco_crop_ancient_stage2",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_ancient_stage2"
+        }
+      },
+      {
+        "when": "tobacco_crop_ancient_stage3",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_ancient_stage3"
+        }
+      },
+      {
+        "when": "tobacco_crop_caravan_stage0",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_caravan_stage0"
+        }
+      },
+      {
+        "when": "tobacco_crop_caravan_stage1",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_caravan_stage1"
+        }
+      },
+      {
+        "when": "tobacco_crop_caravan_stage2",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_caravan_stage2"
+        }
+      },
+      {
+        "when": "tobacco_crop_caravan_stage3",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_crop_caravan_stage3"
         }
       }
     ]

@@ -11,7 +11,7 @@
         "when": "drying_rack",
         "model": {
           "type": "minecraft:model",
-          "model": "cigaro:item/drying_rack_2d"
+          "model": "cigaro:item/station_drying_rack"
         }
       },
       {

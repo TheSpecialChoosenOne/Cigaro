@@ -138,9 +138,9 @@ public class ConfigManager {
         stage4Threshold = config.getInt(
                 "addiction.stage4-threshold", 70
         );
-        withdrawalCheckSeconds = config.getInt(
+        withdrawalCheckSeconds = Math.max(1, config.getInt(
                 "addiction.withdrawal-check-seconds", 60
-        );
+        ));
         quitTimeHours = config.getInt("addiction.quit-time-hours", 4);
 
         tolerancePerSmoke = config.getDouble(
@@ -293,6 +293,8 @@ public class ConfigManager {
 
     public double getSeedDropChance() { return seedDropChance; }
     public List<SmokeEffect> getSmokeEffects(CigaretteType type) {
+        List<SmokeEffect> addon = com.cigaro.api.CigaroAPI.getRegisteredFlavorEffects(type);
+        if (addon != null) return addon;
         return smokeEffects.getOrDefault(type, new ArrayList<>());
     }
     public String getLanguage() { return language; }

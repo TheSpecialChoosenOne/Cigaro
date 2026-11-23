@@ -56,11 +56,11 @@ public class TobaccoManager {
         return plant;
     }
 
-    private static final float[] INTERACTION_HEIGHTS = {0.35f, 0.5f, 0.7f, 0.9f};
+    private static final float[] INTERACTION_HEIGHTS = {0.45f, 1.0f, 1.6f, 2.2f};
     private static final float INTERACTION_WIDTH = 0.8f;
 
     private static final float[] DISPLAY_SCALES = {0.8f, 1.0f, 2.2f, 1.4f};
-    private static final float[] DISPLAY_Y_OFFSET = {0.5f, 0.3f, 1.0f, 0.4f};
+    private static final float[] DISPLAY_Y_OFFSET = {0.4f, 0.5f, 1.1f, 0.7f};
 
     private static final Map<Material, Integer> SOIL_ELITE_BONUS = new HashMap<>();
     static {
@@ -314,6 +314,10 @@ public class TobaccoManager {
             return;
         }
 
+        double chance = Math.min(1.0, (double) TobaccoType.VIRGINIA.getBaseGrowthTicks()
+                / plant.getTobaccoType().getBaseGrowthTicks());
+        if (random.nextDouble() >= chance) return;
+
         plant.setStage(plant.getStage() + 1);
         resetWheatAge(block);
         updateEntities(plant);
@@ -325,6 +329,9 @@ public class TobaccoManager {
         );
 
         plugin.getDatabaseManager().saveTobaccoPlant(plant);
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.GROWN, null, block.getLocation(),
+                plugin.getItemManager().createTobaccoSeeds(plant.getTobaccoType(), 1)));
     }
 
     public TobaccoBlock getPlantByInteraction(UUID interactionId) {
@@ -439,8 +446,6 @@ public class TobaccoManager {
         });
         plant.setInteractionId(interaction.getUniqueId());
 
-        display.addPassenger(interaction);
-
         Location norm = normalize(blockLoc);
         interactionToPlant.put(interaction.getUniqueId(), norm);
     }
@@ -476,6 +481,7 @@ public class TobaccoManager {
                         Math.min(stage, INTERACTION_HEIGHTS.length - 1)
                         ];
                 interaction.setInteractionHeight(height);
+                interaction.setInteractionWidth(INTERACTION_WIDTH);
             }
         }
     }

@@ -30,6 +30,8 @@ public class PlayerData {
     private final Map<String, Integer> predispositions = new ConcurrentHashMap<>();
     private final Map<String, Integer> smokedCounts = new ConcurrentHashMap<>();
 
+    private final Map<String, Integer> habitCounts = new ConcurrentHashMap<>();
+    private int habitSamples;
     private int rainSmokes = 0;
     private int groupSmokes = 0;
 
@@ -67,6 +69,21 @@ public class PlayerData {
 
     public PlayerData(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public void resetAllProgress() {
+        addictionStage = totalSmoked = physicalStage = psychologicalStage = 0;
+        lastSmokeTime = onlineSoberSeconds = physicalSoberSeconds = psychologicalSoberSeconds = 0;
+        tolerances.clear(); predispositions.clear(); smokedCounts.clear();
+        rainSmokes = groupSmokes = habitSamples = 0;
+        habitCounts.clear();
+        preWarningSent = false; physicalScore = psychologicalScore = 0;
+        lungRecoveredHearts = 0; lungRecoverySeconds = 0;
+        predispositionGenerated = false; mastery = 0;
+        lastSessionStart = 0; smokedThisSession = consecutiveDays = 0; lastDaySmoked = 0;
+        lastTypeChangeTime = 0; lastSmokedType = ""; sameTypeStreak = 0;
+        patchAppliedTime = 0; wasAddicted = false; achievements = 0;
+        markDirty();
     }
 
     public UUID getUuid() { return uuid; }
@@ -358,6 +375,17 @@ public class PlayerData {
     public long getAchievements() { return achievements; }
     public void setAchievements(long v) { this.achievements = v; }
 
+    public int getHabitSamples() { return habitSamples; }
+    public int getHabitCount(String key) { return habitCounts.getOrDefault(key, 0); }
+    public void recordHabitSample(Set<String> contexts) {
+        habitSamples++;
+        for (String context : contexts) {
+            if (context.startsWith("place:") && habitCounts.size() >= 80 && !habitCounts.containsKey(context)) continue;
+            habitCounts.merge(context, 1, Integer::sum);
+        }
+        markDirty();
+    }
+
     public String serializeAddonData() {
         JsonObject root = new JsonObject();
 
@@ -380,6 +408,10 @@ public class PlayerData {
             root.add(key, entry);
         }
 
+        JsonObject habits = new JsonObject();
+        habitCounts.forEach(habits::addProperty);
+        root.add("habits", habits);
+        root.addProperty("habit_samples", habitSamples);
         root.addProperty("rain_smk", rainSmokes);
         root.addProperty("grp_smk", groupSmokes);
 
@@ -400,6 +432,11 @@ public class PlayerData {
         try {
             JsonObject root = JsonParser.parseString(json).getAsJsonObject();
 
+            if (root.has("habits") && root.get("habits").isJsonObject()) {
+                for (var entry : root.getAsJsonObject("habits").entrySet())
+                    habitCounts.put(entry.getKey(), Math.max(0, entry.getValue().getAsInt()));
+            }
+            if (root.has("habit_samples")) habitSamples = Math.max(0, root.get("habit_samples").getAsInt());
             if (root.has("rain_smk")) rainSmokes = root.get("rain_smk").getAsInt();
             if (root.has("grp_smk")) groupSmokes = root.get("grp_smk").getAsInt();
 
@@ -415,7 +452,7 @@ public class PlayerData {
             for (Map.Entry<String, com.google.gson.JsonElement> entry : root.entrySet()) {
                 String key = entry.getKey();
 
-                if (key.equals("rain_smk") || key.equals("grp_smk") || key.equals("phy_sc") ||
+                if (key.equals("habits") || key.equals("habit_samples") || key.equals("rain_smk") || key.equals("grp_smk") || key.equals("phy_sc") ||
                         key.equals("psy_sc") || key.equals("phy_stg") || key.equals("psy_stg") ||
                         key.equals("phy_sob") || key.equals("psy_sob") ||
                         key.equals("lung_h") || key.equals("lung_sec")) continue;

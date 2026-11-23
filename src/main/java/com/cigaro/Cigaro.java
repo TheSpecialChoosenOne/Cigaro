@@ -19,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Cigaro extends JavaPlugin {
     private WithdrawalEffectsManager withdrawalEffectsManager;
+    private HabitManager habitManager;
     private AddictionCalculator addictionCalculator;
     private VisualEffectsManager visualEffectsManager;
     private CoughManager coughManager;
@@ -45,6 +46,7 @@ public final class Cigaro extends JavaPlugin {
     private PassiveSmokingManager passiveSmokingManager;
     private com.cigaro.config.LanguageManager languageManager;
     private PipeListener pipeListener;
+    private boolean stationManagersStarted;
 
     @Override
     public void onEnable() {
@@ -62,12 +64,15 @@ public final class Cigaro extends JavaPlugin {
         itemManager = new ItemManager(this);
 
         tobaccoManager = new TobaccoManager(this);
-        tobaccoManager.start();
 
         displayManager = new DisplayManager(this);
         CigaroGui.init(this);
         stationManager = new StationManager(this);
-        stationManager.start();
+        getServer().getScheduler().runTask(this, () -> {
+            tobaccoManager.start();
+            stationManager.start();
+            stationManagersStarted = true;
+        });
 
         guiListener = new GuiListener(this);
 
@@ -77,6 +82,9 @@ public final class Cigaro extends JavaPlugin {
         withdrawalTask = new WithdrawalTask(this);
         withdrawalTask.start();
         addictionCalculator = new AddictionCalculator(this);
+        habitManager = new HabitManager(this);
+        getServer().getPluginManager().registerEvents(habitManager, this);
+        habitManager.start();
 
         achievementManager = new AchievementManager(this);
         fireHazardManager = new FireHazardManager(this);
@@ -96,6 +104,8 @@ public final class Cigaro extends JavaPlugin {
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new TobaccoGrowthListener(this), this);
         pm.registerEvents(new FlavorDropListener(this), this);
+        pm.registerEvents(new AncientTobaccoLootListener(this), this);
+        pm.registerEvents(new CaravanTraderListener(this), this);
         pm.registerEvents(new StationListener(this), this);
 
         coughManager = new CoughManager(this);
@@ -142,8 +152,8 @@ public final class Cigaro extends JavaPlugin {
         CigaroGui.closeAll();
         if (hookahListener != null) hookahListener.cleanupAll();
         if (withdrawalTask != null) withdrawalTask.stop();
-        if (stationManager != null) stationManager.stop();
-        if (tobaccoManager != null) tobaccoManager.stop();
+        if (stationManagersStarted && stationManager != null) stationManager.stop();
+        if (stationManagersStarted && tobaccoManager != null) tobaccoManager.stop();
         if (playerDataManager != null) {
             playerDataManager.stopFlushTask();
             playerDataManager.saveAll();
@@ -156,6 +166,7 @@ public final class Cigaro extends JavaPlugin {
         instance = null;
     }
 
+    public HabitManager getHabitManager() { return habitManager; }
     public WithdrawalTask getWithdrawalTask() { return withdrawalTask; }
     public CoughManager getCoughManager() { return coughManager; }
     public com.cigaro.config.LanguageManager getLanguageManager() { return languageManager; }

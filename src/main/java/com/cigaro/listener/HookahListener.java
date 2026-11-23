@@ -300,6 +300,8 @@ public class HookahListener implements Listener {
                 player, PassiveSmokingManager.SmokeSource.HOOKAH, PASSIVE_RADIUS);
 
         plugin.getDatabaseManager().saveHookahStation(station);
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.HOOKAH_PUFF, player, station.getLocation(), null));
     }
 
     private void updateAddiction(Player player, CigaretteType type) {
@@ -391,7 +393,7 @@ public class HookahListener implements Listener {
         String flavor = plugin.getLanguageManager().getRaw("hookah_status_flavor_none");
         if (station.isBlend()) {
             BlendData blend = station.getBlendData();
-            int pct = (int) (blend.getPrimaryRatio() * 100);
+            int pct = (int) Math.round(blend.getPrimaryRatio() * 100);
             flavor = pct + "% " + plugin.getItemManager().formatTypeName(blend.getPrimary()) + " / "
                     + (100 - pct) + "% " + plugin.getItemManager().formatTypeName(blend.getSecondary());
         } else if (station.getFlavorType() != null) {

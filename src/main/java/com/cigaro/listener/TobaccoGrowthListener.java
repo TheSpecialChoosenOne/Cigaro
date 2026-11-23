@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import java.util.List;
 import org.bukkit.event.block.BlockFadeEvent;
 import com.cigaro.Cigaro;
+import com.cigaro.station.StationBreakCheckEvent;
 import com.cigaro.data.CigaroAchievement;
 import com.cigaro.data.TobaccoType;
 import com.cigaro.data.DryingLevel;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -46,10 +48,11 @@ public class TobaccoGrowthListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlantSeeds(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.useItemInHand() == Event.Result.DENY) return;
 
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -78,6 +81,9 @@ public class TobaccoGrowthListener implements Listener {
         boolean success = plugin.getTobaccoManager().plantTobacco(plantBlock, seedType);
 
         if (success) {
+            plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                    com.cigaro.api.CigaroTobaccoEvent.Action.PLANTED, player, plantBlock.getLocation(),
+                    plugin.getItemManager().createTobaccoSeeds(seedType, 1)));
             if (player.getGameMode() != GameMode.CREATIVE) {
                 item.setAmount(item.getAmount() - 1);
             }
@@ -91,6 +97,7 @@ public class TobaccoGrowthListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreakBelowPlant(BlockBreakEvent event) {
+        if (event instanceof StationBreakCheckEvent) return;
         Block broken = event.getBlock();
         Block above = broken.getRelative(0, 1, 0);
         if (above.getType() != Material.WHEAT) return;
@@ -373,6 +380,9 @@ public class TobaccoGrowthListener implements Listener {
         player.playSound(player.getLocation(), Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, 1f, 1f);
 
         manager.removePlant(plant.getLocation());
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.HARVESTED, player, block.getLocation(),
+                plugin.getItemManager().createTobaccoSeeds(tobaccoType, 1)));
     }
 
     private void destroyCrop(Player player, TobaccoBlock plant) {

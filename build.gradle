@@ -65,3 +65,11 @@ processResources {
         expand props
     }
 }
+
+tasks.register('blendCompatibilityCheck', JavaExec) {
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.cigaro.data.BlendCompatibilityCheck'
+}
+tasks.named('check') { dependsOn tasks.named('blendCompatibilityCheck') }
+tasks.named('test') { failOnNoDiscoveredTests = false }

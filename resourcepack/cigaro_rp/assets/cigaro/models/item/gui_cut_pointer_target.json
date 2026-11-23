@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cigaro:item/gui_cut_target",
+    "layer1": "cigaro:item/gui_cut_pointer"
+  }
+}

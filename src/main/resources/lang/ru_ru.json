@@ -1,14 +1,10 @@
 {
   "prefix": "<dark_gray>[<c_gold>Cigaro<dark_gray>] ",
-
-  "cmd_unknown": "<red>Неизвестная команда. Введите /cigaro для справки.",
-  "cmd_players_only": "<red>Только для игроков.",
-  "cmd_no_permission": "<red>Нет прав.",
-
+  "cmd_unknown": "<c_error>Неизвестная команда. Введите /cigaro для справки.",
+  "cmd_players_only": "<c_error>Только для игроков.",
+  "cmd_no_permission": "<c_error>Нет прав.",
   "error_bonemeal_burned": "<c_error>Растение завяло от избытка удобрений...",
-
   "item_cigarette_butt_name": "<c_ash>Окурок",
-
   "pipe_broken": "<c_ash>Эта трубка сломана.",
   "pipe_need_tobacco": "<c_ash>Держите нарезанный табак во второй руке, чтобы набить.",
   "pipe_packed": "<c_smoke>Трубка набита. Зарядов: <charges>.",
@@ -18,135 +14,126 @@
   "item_pipe_status_broken": "<c_ash>Сломана",
   "item_pipe_status_empty": "<c_ash>Пуста",
   "item_pipe_durability": "<color>Прочность: <current>/<max>",
-  "cmd_help_header": "<gold>═══ CIGARO v<version> ═══",
-  "cmd_help_subtitle": "<gray>Закуривай. Или не стоит.",
-  "cmd_help_lines":[
-    "<yellow>/cigaro stats <gray>— ваша статистика курения",
-    "<yellow>/cigaro give <item> <gray>— выдать предметы (админ)",
-    "<yellow>/cigaro reload <gray>— перезагрузить конфиг (админ)",
-    "<yellow>/cigaro debug <sub> <gray>— инструменты отладки (админ)",
-    "<yellow>/cigaro top <gray>— топ курильщиков",
-    "<yellow>/cigaro achievements <gray>— ваши достижения"
+  "cmd_help_header": "<c_gold>═══ CIGARO v<version> ═══",
+  "cmd_help_subtitle": "<c_smoke>Закуривай. Или не стоит.",
+  "cmd_help_lines": [
+    "<c_gold>/cigaro stats <c_smoke>— ваша статистика курения",
+    "<c_gold>/cigaro give <item> <c_smoke>— выдать предметы (админ)",
+    "<c_gold>/cigaro reload <c_smoke>— перезагрузить конфиг (админ)",
+    "<c_gold>/cigaro debug <sub> <c_smoke>— инструменты отладки (админ)",
+    "<c_gold>/cigaro top <c_smoke>— топ курильщиков",
+    "<c_gold>/cigaro achievements <c_smoke>— ваши достижения"
   ],
-
   "cmd_stage_0": "Чист",
   "cmd_stage_1": "Легкая тяга",
   "cmd_stage_2": "Привычка",
   "cmd_stage_3": "Зависимость",
   "cmd_stage_4": "Сильная зависимость",
-
   "cmd_pred_favorite": "★★★ Любимый",
   "cmd_pred_golden": "★★ Золотой",
   "cmd_pred_neutral": "★ Нейтральный",
   "cmd_pred_bad": "✘ Плохой",
   "cmd_pred_catastrophic": "✘✘ Катастрофический",
-
   "cmd_stats_header": "<c_gold>═══ СТАТИСТИКА CIGARO ═══",
   "cmd_stats_addiction": "<c_smoke>Зависимость: <stage_color><stage_name>",
-  "cmd_stats_total": "<c_smoke>Всего выкурено: <white><total>",
-  "cmd_stats_sober": "<c_smoke>Время воздержания: <white><time>",
+  "cmd_stats_total": "<c_smoke>Всего выкурено: <c_smoke><total>",
+  "cmd_stats_sober": "<c_smoke>Время воздержания: <c_smoke><time>",
   "cmd_stats_smoked_header": "<c_smoke>Выкурено по видам:",
-  "cmd_stats_smoked_entry": "<type_color>  <name>: <white><count>",
+  "cmd_stats_smoked_entry": "<type_color>  <name>: <c_smoke><count>",
   "cmd_stats_tolerance_header": "<c_smoke>Толерантность:",
-  "cmd_stats_tolerance_entry": "<type_color>  <name>: <white><value>",
+  "cmd_stats_tolerance_entry": "<type_color>  <name>: <c_smoke><value>",
   "cmd_stats_mastery": "<c_smoke>Мастерство: <c_gold><mastery>",
   "cmd_stats_pred_header": "<c_smoke>Предрасположенность:",
   "cmd_stats_pred_unknown": "<c_smoke>Предрасположенность: <c_ash>Неизвестно — покурите, чтобы узнать",
   "cmd_stats_pred_entry": "<type_color>  <name>: <value_color><label>",
-
-  "cmd_give_header": "<gold>═══ CIGARO GIVE ═══",
-  "cmd_give_help":[
-    "<yellow>/cigaro give seeds [тип] <gray>— семена табака",
-    "<yellow>/cigaro give leaf [тип] <gray>— листья табака",
-    "<yellow>/cigaro give cut [тип] <gray>— нарезанный табак",
-    "<yellow>/cigaro give flavor <тип> [raw|bottle] <gray>— ароматизатор",
-    "<yellow>/cigaro give cigarette <тип> <качество> [кол-во] <gray>— сигареты",
-    "<yellow>/cigaro give dryrack <gray>— сушилка",
-    "<yellow>/cigaro give cuttable <gray>— стол для резки",
-    "<yellow>/cigaro give roller <gray>— машинка для скручивания",
-    "<yellow>/cigaro give infuser <gray>— инфузор"
+  "cmd_give_header": "<c_gold>═══ CIGARO GIVE ═══",
+  "cmd_give_help": [
+    "<c_gold>Сырьё: <c_smoke>seeds, leaf, cut, flavor, paper, cardboard, fuelpellets",
+    "<c_gold>Изделия: <c_smoke>cigarette, cigar, pipe, hookah, pack, patch, smokescreen",
+    "<c_gold>Станции: <c_smoke>dryrack, cuttable, roller, infuser, blendingtable, packer",
+    "<c_gold>Автоматика: <c_smoke>autodryrack, cuttingmachine, rollingpress, packingpress",
+    "<c_gold>Инструменты: <c_smoke>fertilizer, timer, lighter, teststrip",
+    "<c_smoke>Tab показывает доступные типы и параметры. Получатель: --player <имя>.",
+    "<c_gold>cut <type> [bad|rough|good|perfect] [raw|damp|dried|perfect|overdried] [normal|elite]",
+    "<c_gold>leaf <type> [raw|damp|dried|perfect|overdried] [normal|elite]",
+    "<c_smoke>--amount 1..64 · --player <name>"
   ],
-  "cmd_give_unknown_item": "<red>Неизвестный предмет. Введите /cigaro give для списка.",
-  "cmd_give_unknown_type": "<red>Неизвестный тип или качество.",
-  "cmd_give_types": "<red>Типы: <types>",
-  "cmd_give_quality_list": "<gray>Качество: standard, golden, blue, vintage",
-  "cmd_give_flavor_usage": "<yellow>Использование: /cigaro give flavor <тип> [raw|bottle]",
-  "cmd_give_cigarette_usage": "<yellow>Использование: /cigaro give cigarette <тип> <качество> [кол-во]",
-  "cmd_give_cigar_usage": "<yellow>Использование: /cigaro give cigar <тип> <качество> [кол-во]",
-  "cmd_give_pipe_warning": "<yellow>⚠ ВНИМАНИЕ: Курительная трубка еще не закончена!",
-  "cmd_give_seeds_type": "<green>Выдано семян: <amount>x <type>.",
-  "cmd_give_seeds_all": "<green>Выданы все семена табака.",
-  "cmd_give_pack": "<green>Выдана пустая пачка.",
-  "cmd_give_packer": "<green>Выдана упаковочная машинка.",
-  "cmd_give_fertilizer": "<green>Выдано: <amount>x Удобрение для табака.",
-  "cmd_give_timer": "<green>Выдан таймер сушки.",
-  "cmd_give_lighter": "<green>Выдана Зажигалка Статистики.",
-  "cmd_give_teststrip": "<green>Выдано: <amount>x Тестовая полоска качества.",
-  "cmd_give_paper": "<green>Выдано: <amount>x Сигаретная бумага.",
-  "cmd_give_cardboard": "<green>Выдано: <amount>x Картон.",
-  "cmd_give_fuelpellets": "<green>Выдано: <amount>x Топливные гранулы.",
-  "cmd_give_autodryrack": "<green>Выдана Авто-сушилка.",
-  "cmd_give_cuttingmachine": "<green>Выдана Машина для резки.",
-  "cmd_give_rollingpress": "<green>Выдан Скручивающий пресс.",
-  "cmd_give_packingpress": "<green>Выдан Упаковочный пресс.",
-  "cmd_give_leaf_type": "<green>Выданы листья <type>.",
-  "cmd_give_leaf_all": "<green>Выданы все листья табака.",
-  "cmd_give_cut_type": "<green>Выдан нарезанный табак <type>.",
-  "cmd_give_cut_default": "<green>Выдан нарезанный табак.",
-  "cmd_give_flavor_raw": "<green>Выдано сырье <type>.",
-  "cmd_give_flavor_bottle": "<green>Выдан экстракт <type>.",
-  "cmd_give_flavor_both": "<green>Выдано сырье + экстракт <type>.",
-  "cmd_give_cigarette": "<green>Выданы сигареты: <amount>x <type> <quality>.",
-  "cmd_give_smokescreen": "<green>Выдано Дымовых сигарет: <amount> шт.",
-  "cmd_give_dryrack": "<green>Выдана Сушилка.",
-  "cmd_give_cuttable": "<green>Выдан Стол для резки.",
-  "cmd_give_roller": "<green>Выдана Машинка для скручивания.",
-  "cmd_give_infuser": "<green>Выдан Инфузор.",
-  "cmd_give_cigar": "<green>Выдано сигар: <amount> шт.",
-  "cmd_give_pipe": "<green>Выдана Курительная трубка (для тестов).",
-  "cmd_give_hookah": "<green>Выдан Кальян.",
-  "cmd_give_blendingtable": "<green>Выдан Стол для смешивания.",
-  "cmd_give_patch": "<green>Выдано: <amount>x Никотиновый пластырь.",
-
-  "cmd_reload_success": "<green>Конфиг перезагружен.",
-
+  "cmd_give_unknown_item": "<c_error>Неизвестный предмет. Введите /cigaro give для списка.",
+  "cmd_give_unknown_type": "<c_error>Неизвестный тип или качество.",
+  "cmd_give_types": "<c_error>Типы: <types>",
+  "cmd_give_quality_list": "<c_smoke>Качество: standard, golden, blue, vintage",
+  "cmd_give_flavor_usage": "<c_gold>Использование: /cigaro give flavor <тип> [raw|bottle]",
+  "cmd_give_cigarette_usage": "<c_gold>Использование: /cigaro give cigarette <тип> <качество> [кол-во]",
+  "cmd_give_cigar_usage": "<c_gold>Использование: /cigaro give cigar <тип> <качество> [кол-во]",
+  "cmd_give_pipe_warning": "<c_gold>⚠ ВНИМАНИЕ: Курительная трубка еще не закончена!",
+  "cmd_give_seeds_type": "<c_success>Выдано семян: <amount>x <type>.",
+  "cmd_give_seeds_all": "<c_success>Выданы все семена табака.",
+  "cmd_give_pack": "<c_success>Выдана пустая пачка.",
+  "cmd_give_packer": "<c_success>Выдана упаковочная машинка.",
+  "cmd_give_fertilizer": "<c_success>Выдано: <amount>x Удобрение для табака.",
+  "cmd_give_timer": "<c_success>Выдан таймер сушки.",
+  "cmd_give_lighter": "<c_success>Выдана Зажигалка Статистики.",
+  "cmd_give_teststrip": "<c_success>Выдано: <amount>x Тестовая полоска качества.",
+  "cmd_give_paper": "<c_success>Выдано: <amount>x Сигаретная бумага.",
+  "cmd_give_cardboard": "<c_success>Выдано: <amount>x Картон.",
+  "cmd_give_fuelpellets": "<c_success>Выдано: <amount>x Топливные гранулы.",
+  "cmd_give_autodryrack": "<c_success>Выдана Авто-сушилка.",
+  "cmd_give_cuttingmachine": "<c_success>Выдана Машина для резки.",
+  "cmd_give_rollingpress": "<c_success>Выдан Скручивающий пресс.",
+  "cmd_give_packingpress": "<c_success>Выдан Упаковочный пресс.",
+  "cmd_give_leaf_type": "<c_success>Выданы листья <type>.",
+  "cmd_give_leaf_all": "<c_success>Выданы все листья табака.",
+  "cmd_give_cut_type": "<c_success>Выдан нарезанный табак <type>.",
+  "cmd_give_cut_default": "<c_success>Выдан нарезанный табак.",
+  "cmd_give_flavor_raw": "<c_success>Выдано сырье <type>.",
+  "cmd_give_flavor_bottle": "<c_success>Выдан экстракт <type>.",
+  "cmd_give_flavor_both": "<c_success>Выдано сырье + экстракт <type>.",
+  "cmd_give_cigarette": "<c_success>Выданы сигареты: <amount>x <type> <quality>.",
+  "cmd_give_smokescreen": "<c_success>Выдано Дымовых сигарет: <amount> шт.",
+  "cmd_give_dryrack": "<c_success>Выдана Сушилка.",
+  "cmd_give_cuttable": "<c_success>Выдан Стол для резки.",
+  "cmd_give_roller": "<c_success>Выдана Машинка для скручивания.",
+  "cmd_give_infuser": "<c_success>Выдан Инфузор.",
+  "cmd_give_cigar": "<c_success>Выдано сигар: <amount> шт.",
+  "cmd_give_pipe": "<c_success>Выдана Курительная трубка (для тестов).",
+  "cmd_give_hookah": "<c_success>Выдан Кальян.",
+  "cmd_give_blendingtable": "<c_success>Выдан Стол для смешивания.",
+  "cmd_give_patch": "<c_success>Выдано: <amount>x Никотиновый пластырь.",
+  "cmd_reload_success": "<c_success>Конфиг перезагружен.",
   "cmd_top_header": "<c_gold>═══ ТОП КУРИЛЬЩИКОВ ═══",
   "cmd_top_empty": "<c_ash>Пока нет курильщиков.",
-  "cmd_top_entry": "<rank_color><medal> <white><name> <c_smoke>— <total> выкурено <c_ash>(<stage>)",
+  "cmd_top_entry": "<rank_color><medal> <c_smoke><name> <c_smoke>— <total> выкурено <c_ash>(<stage>)",
   "cmd_top_stage_0": "Чист",
   "cmd_top_stage_1": "Легкая",
   "cmd_top_stage_2": "Привычка",
   "cmd_top_stage_3": "Зависимость",
   "cmd_top_stage_4": "Сильная",
-
   "cmd_achievements_header": "<c_gold>═══ ДОСТИЖЕНИЯ (<unlocked>/<total>) ═══",
   "cmd_achievement_unlocked": "  <c_success>✔ <ach_color><name> <c_ash><i>— <desc>",
   "cmd_achievement_locked": "  <c_ash>✘ <c_ash><name> <c_ash><i>— <desc>",
-
-  "cmd_analytics_success": "<green>Аналитический отчет сгенерирован в консоли и сохранен в файл.",
-
-  "cmd_debug_header": "<gold>═══ ОТЛАДКА CIGARO ═══",
-  "cmd_debug_help":[
-    "<yellow>/cigaro debug withdrawal <0-4> <gray>— установить стадию зависимости",
-    "<yellow>/cigaro debug tolerance <0.0-1.0> <gray>— установить всю толерантность",
-    "<yellow>/cigaro debug smoked <кол-во> <gray>— установить кол-во выкуренного",
-    "<yellow>/cigaro debug reset <gray>— полный сброс",
-    "<yellow>/cigaro debug predisposition <gray>— перегенерировать предрасположенность",
-    "<yellow>/cigaro debug sober <часы> <gray>— установить время воздержания"
+  "cmd_analytics_success": "<c_success>Аналитический отчет сгенерирован в консоли и сохранен в файл.",
+  "cmd_debug_header": "<c_gold>═══ ОТЛАДКА CIGARO ═══",
+  "cmd_debug_help": [
+    "<c_gold>/cigaro debug withdrawal <0-4> <c_smoke>— установить стадию зависимости",
+    "<c_gold>/cigaro debug tolerance <0.0-1.0> <c_smoke>— установить всю толерантность",
+    "<c_gold>/cigaro debug smoked <кол-во> <c_smoke>— установить кол-во выкуренного",
+    "<c_gold>/cigaro debug reset <c_smoke>— полный сброс",
+    "<c_gold>/cigaro debug predisposition <c_smoke>— перегенерировать предрасположенность",
+    "<c_gold>/cigaro debug sober <часы> <c_smoke>— установить время воздержания",
+    "<c_gold>/cigaro debug blood <c_smoke>— particle test"
   ],
-  "cmd_debug_withdrawal_set": "<green>Зависимость установлена на: <stage_name> (стадия <stage>)",
-  "cmd_debug_tolerance_set": "<green>Вся толерантность установлена на: <value>",
-  "cmd_debug_smoked_set": "<green>Всего выкурено установлено на: <amount>",
-  "cmd_debug_reset_done": "<green>Все данные сброшены.",
-  "cmd_debug_pred_regen": "<green>Предрасположенность перегенерирована:",
-  "cmd_debug_sober_set": "<green>Время воздержания установлено на: <hours>ч (<seconds>с)",
-  "cmd_debug_invalid_number": "<red>Неверное число.",
-  "cmd_debug_unknown": "<red>Неизвестная команда отладки. Введите /cigaro debug",
-  "cmd_debug_usage": "<yellow>Использование: /cigaro debug <sub> <аргументы>",
-
+  "cmd_debug_withdrawal_set": "<c_success>Зависимость установлена на: <stage_name> (стадия <stage>)",
+  "cmd_debug_tolerance_set": "<c_success>Вся толерантность установлена на: <value>",
+  "cmd_debug_smoked_set": "<c_success>Всего выкурено установлено на: <amount>",
+  "cmd_debug_reset_done": "<c_success>Все данные сброшены.",
+  "cmd_debug_pred_regen": "<c_success>Предрасположенность перегенерирована:",
+  "cmd_debug_sober_set": "<c_success>Время воздержания установлено на: <hours>ч (<seconds>с)",
+  "cmd_debug_invalid_number": "<c_error>Неверное число.",
+  "cmd_debug_unknown": "<c_error>Неизвестная команда отладки. Введите /cigaro debug",
+  "cmd_debug_usage": "<c_gold>Использование: /cigaro debug <sub> <аргументы>",
   "gui_cutting_title": "<c_dark>Стол для резки",
   "gui_cutting_info_name": "<c_dark>Стол для резки",
-  "gui_cutting_info_lore":[
+  "gui_cutting_info_lore": [
     "",
     "<c_smoke>Поместите листья табака",
     "<c_smoke>в слот ввода.",
@@ -168,25 +155,26 @@
   "gui_cutting_cut_done_lore": "<c_ash>Добавьте листья или заберите результат",
   "gui_cutting_err_no_leaf": "<c_error>Сначала положите листья табака.",
   "gui_cutting_err_not_dried": "<c_error>Эти листья сначала нужно высушить!",
-
   "gui_blending_title": "<c_dark>Стол для смешивания",
   "gui_blending_info_name": "<c_dark>Стол для смешивания",
-  "gui_blending_info_lore":[
+  "gui_blending_info_lore": [
     "",
     "<c_smoke>Положите два разных типа",
     "<c_smoke>нарезанного табака для смешивания.",
     "",
     "<c_ash>Пропорция зависит от количества.",
-    "<c_ash>3 Мята + 5 Тень = 37/63",
+    "<c_ash>3 Мята + 5 Тень ≈ 38/62",
     "<c_ash>Допустимы пропорции от 30/70 до 70/30.",
     "",
     "<c_success>★ Смесь даёт эффекты ОБОИХ вкусов",
     "<c_warning>⚠ Длительность каждого — вдвое меньше",
-    "<c_ash>Сушка и качество берутся по худшему сырью"
+    "<c_ash>Сушка — по худшему сырью; нарезка усредняется"
   ],
+  "gui_blending_input_a": "<c_gold>Первый ингредиент ↓",
+  "gui_blending_input_b": "<c_gold>Второй ингредиент ↓",
   "gui_blending_ratio_empty": "<c_ash>—/—",
-  "gui_blending_ratio": "<c_gold><pctA> / <pctB>",
-  "gui_blending_ratio_lore": "<c_smoke><amountA> + <amountB> = <total> единиц",
+  "gui_blending_ratio": "<c_gold>≈ <pcta>% / <pctb>%",
+  "gui_blending_ratio_lore": "<c_smoke><amounta> + <amountb> = <total> единиц",
   "gui_blending_preview_empty": "<c_ash>Предпросмотр",
   "gui_blending_preview_empty_lore": "<c_ash>Добавьте табак в оба слота",
   "gui_blending_preview_invalid": "<c_error>Недопустимо",
@@ -201,27 +189,25 @@
   "gui_blending_blend_ready": "<c_gold>СМЕШАТЬ",
   "gui_blending_blend_ready_lore": "<c_ash>Нажмите, чтобы смешать",
   "gui_blending_blend_idle": "<c_ash>СМЕШАТЬ",
-  "gui_blending_blend_idle_lore": "<c_ash>Добавьте два разных типа",
+  "gui_blending_blend_idle_lore": "<c_ash>Проверьте ингредиенты и пропорцию",
   "gui_blending_err_no_input": "<c_error>Поместите два типа табака.",
   "gui_blending_err_not_cut": "<c_error>Смешивать можно только нарезанный табак.",
   "gui_blending_err_reblend": "<c_error>Нельзя смешивать уже смешанный табак.",
   "gui_blending_err_unknown_type": "<c_error>Неизвестный тип табака.",
   "gui_blending_err_same_type": "<c_error>Используйте два разных типа!",
   "gui_blending_err_ratio": "<c_error>Слишком неравная смесь. Нужна пропорция от <min>% до <max>%.",
-  "gui_blending_success": "<c_gold>Смешано! <pctA>% <typeA> / <pctB>% <typeB> (<total> единиц)",
-
+  "gui_blending_success": "<c_gold>Смешано! <pcta>% <typea> / <pctb>% <typeb> (<total> единиц)",
   "gui_stats_title": "<c_dark>Статистика курения",
-  "gui_stats_stage_name": "Стадия: <stage>",
-  "gui_stats_total_line": "Всего: <total>",
-  "gui_stats_sober_line": "Воздержание: <sober>ч",
-  "gui_stats_tolerance_name": "Толерантность",
-  "gui_stats_predisposition_name": "Предрасположенность",
+  "gui_stats_stage_name": "<c_gold>Стадия: <stage>",
+  "gui_stats_total_line": "<c_smoke>Всего: <total>",
+  "gui_stats_sober_line": "<c_smoke>Воздержание: <sober>ч",
+  "gui_stats_tolerance_name": "<c_gold>Толерантность",
+  "gui_stats_predisposition_name": "<c_gold>Предрасположенность",
   "gui_stats_stage_0": "Нет",
   "gui_stats_stage_1": "Легкая",
   "gui_stats_stage_2": "Умеренная",
   "gui_stats_stage_3": "Сильная",
   "gui_stats_stage_4": "Тяжелая",
-
   "error_no_space": "<c_error>Нет места для посадки.",
   "success_planted": "<c_success>Табак <type> посажен.",
   "error_bone_meal_burn": "<c_error>Растение завяло от избытка удобрений...",
@@ -231,14 +217,13 @@
   "success_harvest": "<c_success>Табак <type> собран!",
   "error_harvest_early": "<c_warning>Еще не созрело... Семена возвращены.",
   "error_fully_grown": "<c_warning>Растение уже полностью выросло!",
-
   "item_tobacco_seeds_name": "<c_success>Семена табака <type>",
-  "item_tobacco_seeds_lore":[
+  "item_tobacco_seeds_lore": [
     "<c_smoke>Посадите на землю, чтобы вырастить табак",
     "<c_ash><speed>"
   ],
   "item_fertilizer_name": "<c_success>Удобрение для табака",
-  "item_fertilizer_lore":[
+  "item_fertilizer_lore": [
     "<c_smoke>Используйте на растениях табака, чтобы",
     "<c_smoke>увеличить шанс на элитный лист на +2%.",
     "",
@@ -246,17 +231,17 @@
     "<c_error>5% шанс повредить растение"
   ],
   "item_drying_timer_name": "<c_dark>Таймер сушки",
-  "item_drying_timer_lore":[
+  "item_drying_timer_lore": [
     "<c_ash>Проверка прогресса сушки",
     "<c_smoke>ПКМ по Сушилке"
   ],
   "item_lighter_stats_name": "<c_gold>Зажигалка Статистики",
-  "item_lighter_stats_lore":[
+  "item_lighter_stats_lore": [
     "<c_ash>Просмотр статистики курения",
     "<c_smoke>ПКМ, чтобы открыть меню статистики"
   ],
   "item_test_strip_name": "<c_dark>Тестовая полоска качества",
-  "item_test_strip_lore":[
+  "item_test_strip_lore": [
     "<c_ash>Проверка качества нарезанного табака",
     "<c_smoke>Возьмите табак во вторую руку",
     "<c_smoke>ПКМ в воздухе для тестирования",
@@ -264,25 +249,25 @@
     "<c_warning>⚠ Одноразовое использование!"
   ],
   "item_paper_name": "<c_smoke>Сигаретная бумага",
-  "item_paper_lore":[
+  "item_paper_lore": [
     "<c_ash>Используется для скручивания сигарет",
     "",
     "<c_dark>1 бумага = 8 сигарет"
   ],
   "item_cardboard_name": "<c_dark>Картон",
-  "item_cardboard_lore":[
+  "item_cardboard_lore": [
     "<c_ash>Используется для пачек сигарет",
     "",
     "<c_dark>1 картон = 1 пачка"
   ],
   "item_pellets_name": "<c_ember>Топливные гранулы",
-  "item_pellets_lore":[
+  "item_pellets_lore": [
     "<c_ash>Топливо для автоматических машин",
     "",
     "<c_dark>1 гранула = 20 секунд"
   ],
   "item_auto_dryer_name": "<c_dark>Авто-сушилка",
-  "item_auto_dryer_lore":[
+  "item_auto_dryer_lore": [
     "<c_smoke>Автоматически сушит листья табака",
     "",
     "<c_warning>• 4 слота для листьев",
@@ -290,7 +275,7 @@
     "<c_error>• Требует топливные гранулы"
   ],
   "item_cutting_machine_name": "<c_dark>Машина для резки",
-  "item_cutting_machine_lore":[
+  "item_cutting_machine_lore": [
     "<c_smoke>Автоматически режет высушенный табак",
     "",
     "<c_warning>• 5 секунд на резку",
@@ -298,7 +283,7 @@
     "<c_error>• Требует топливные гранулы"
   ],
   "item_rolling_press_name": "<c_dark>Скручивающий пресс",
-  "item_rolling_press_lore":[
+  "item_rolling_press_lore": [
     "<c_smoke>Автоматически скручивает сигареты",
     "",
     "<c_warning>• 8 сигарет за 10с",
@@ -306,7 +291,7 @@
     "<c_error>• Требует топливные гранулы"
   ],
   "item_packing_press_name": "<c_dark>Упаковочный пресс",
-  "item_packing_press_lore":[
+  "item_packing_press_lore": [
     "<c_smoke>Автоматически упаковывает сигареты",
     "",
     "<c_warning>• 10 сигарет → 1 пачка",
@@ -314,34 +299,34 @@
     "<c_success>• 3 секунды на операцию"
   ],
   "item_drying_rack_name": "<c_dark>Сушилка",
-  "item_drying_rack_lore":[
+  "item_drying_rack_lore": [
     "<c_smoke>Вмещает до 16 листьев табака",
     "<c_ash>ПКМ, чтобы положить/забрать",
     "",
     "<c_error>⚠ Не дайте им пересохнуть!"
   ],
   "item_rolling_machine_name": "<c_dark>Машинка для скручивания",
-  "item_rolling_machine_lore":[
+  "item_rolling_machine_lore": [
     "<c_smoke>Поместите сырье для скручивания сигарет",
     "<c_ash>ПКМ для использования"
   ],
   "item_cutting_table_name": "<c_dark>Стол для резки",
-  "item_cutting_table_lore":[
+  "item_cutting_table_lore": [
     "<c_smoke>Нарезка листьев табака для скручивания",
     "<c_ash>ПКМ для использования"
   ],
   "item_packing_machine_name": "<c_dark>Упаковочная машинка",
-  "item_packing_machine_lore":[
+  "item_packing_machine_lore": [
     "<c_smoke>Упаковка сигарет в пачки",
     "<c_ash>ПКМ для использования"
   ],
   "item_infuser_name": "<c_dark>Инфузор",
-  "item_infuser_lore":[
+  "item_infuser_lore": [
     "<c_smoke>Настойка сырых ингредиентов в колбы",
     "<c_ash>ПКМ для использования"
   ],
   "item_hookah_name": "<c_dark>Кальян",
-  "item_hookah_lore":[
+  "item_hookah_lore": [
     "<c_smoke>Поставьте для установки кальяна",
     "",
     "<c_warning>• Несколько курильщиков одновременно",
@@ -349,35 +334,35 @@
     "<c_ash>• 20 затяжек на одну заправку"
   ],
   "item_blending_table_name": "<c_dark>Стол для смешивания",
-  "item_blending_table_lore":[
+  "item_blending_table_lore": [
     "<c_smoke>Смешивание двух видов табака",
     "<c_smoke>для создания гибридных эффектов",
     "",
     "<c_ash>ПКМ для использования"
   ],
   "item_leaf_name": "<color><prefix>Лист <type>",
-  "item_leaf_lore":[
+  "item_leaf_lore": [
     "<c_smoke><type>",
     "<c_gold><elite_text>",
     "",
     "<level_color><level_name>"
   ],
   "item_dried_tobacco_name": "<color><prefix>Высушенный табак",
-  "item_dried_tobacco_lore":[
+  "item_dried_tobacco_lore": [
     "<quality_color><symbol>Сушка: <quality_name>"
   ],
   "item_flavor_bottle_name": "<flavor_color>Экстракт <type>",
-  "item_flavor_bottle_lore":[
+  "item_flavor_bottle_lore": [
     "<c_ash>Ароматизатор",
     "",
     "<c_smoke>Используется в Машинке для скручивания"
   ],
   "item_raw_ingredient_name": "<flavor_color>Сырье: <type>",
-  "item_raw_ingredient_lore":[
+  "item_raw_ingredient_lore": [
     "<c_smoke>Перерабатывается в Инфузоре"
   ],
   "item_cut_tobacco_name": "<color><prefix>Нарезанный <type>",
-  "item_cut_tobacco_lore":[
+  "item_cut_tobacco_lore": [
     "<c_smoke><type>",
     "<level_color><level_name>",
     "<cut_color><cut_label>",
@@ -397,7 +382,7 @@
   "item_cigarette_lore_used": "<c_ash>ПКМ, чтобы продолжить курить",
   "item_cigar_name": "<quality_color><quality> Сигара <type>",
   "item_blended_cigar_name": "<quality_color><quality> Купажная сигара",
-  "item_cigar_lore":[
+  "item_cigar_lore": [
     "<type_color><type> <c_ash>· <quality_color><quality>",
     "",
     "<c_ember>Одна мощная затяжка",
@@ -409,17 +394,17 @@
   "item_pack_lore_empty": [
     "<c_ash>Пусто"
   ],
-  "item_pack_lore_controls":[
+  "item_pack_lore_controls": [
     "",
     "<c_ash>ПКМ — взять сигарету",
     "<c_ash>ПКМ + сигарета во второй руке — положить обратно"
   ],
   "item_pipe_name": "<color>Курительная трубка",
-  "item_pipe_lore_broken":[
+  "item_pipe_lore_broken": [
     "",
     "<c_ash><i>Эта трубка повидала лучшие времена."
   ],
-  "item_pipe_lore_empty":[
+  "item_pipe_lore_empty": [
     "",
     "<c_ash>Возьмите нарезанный табак во вторую руку",
     "<c_ash>ПКМ, чтобы набить"
@@ -429,17 +414,17 @@
     "<c_ash>ПКМ, чтобы закурить"
   ],
   "item_patch_name": "<c_warning>Никотиновый пластырь",
-  "item_patch_lore":[
-    "<c_smoke>Облегчает симптомы ломки",
+  "item_patch_lore": [
+    "<c_smoke>Подавляет симптомы ломки",
     "",
-    "<c_ash>• Снижает симптомы на 10 мин",
+    "<c_ash>• Убирает симптомы на 10 мин",
     "<c_ember>• НЕ лечит зависимость",
-    "<c_ash>• Перезарядка 30 мин",
+    "<c_ash>• Перезарядка <cooldown> мин",
     "",
     "<c_ash>ПКМ, чтобы наклеить"
   ],
   "item_smokescreen_name": "<c_ash>Дымовая сигарета",
-  "item_smokescreen_lore":[
+  "item_smokescreen_lore": [
     "<c_smoke>Тактический дым",
     "",
     "<puff_color><puff_bar>",
@@ -448,7 +433,6 @@
     "<c_ash>Выдыхает плотное облако дыма 5x5.",
     "<c_success>Без никотина. Без зависимости."
   ],
-
   "smoke_extinguished_water": "<c_ash>Вода потушила вашу сигарету.",
   "smoke_went_out_wet": "<c_ash>Ваша сигарета потухла от сырости...",
   "smoke_cant_light_here": "<c_ash>Вы не можете закурить здесь.",
@@ -462,32 +446,26 @@
   "smoke_too_wet": "<c_ash>Слишком сыро, чтобы закурить.",
   "smoke_lit_from_player": "<c_smoke>Вы прикурили от <name>.",
   "smoke_player_lit_from_you": "<c_smoke><name> прикурил от вас.",
-
   "smoke_msg_fav_long_break": "<c_gold>Боже, как же тебе это было нужно...",
   "smoke_msg_long_break": "<msg_color>Первая идет совсем по-другому.",
   "smoke_msg_fav": "<c_gold>Идеально... то, что нужно.",
   "smoke_msg_good": "<c_success>Хороший перекур.",
   "smoke_msg_neutral": "<c_smoke>Нормально.",
-
   "smoke_catastrophic_reject": "<b><c_error>Ваш организм жестко отторгает этот дым!",
   "smoke_catastrophic_sick": "<i><c_error>Кажется, вас сейчас стошнит...",
   "smoke_bad_reaction": "<c_ember>Уф... не твое.",
-
   "smoke_relapse_rushing": "<b><c_error>Всё возвращается с новой силой.",
   "smoke_relapse_hooked": "<i><c_ember>Ты снова на крючке. Вот так просто.",
   "smoke_relapse_relief": "<c_gold>Облегчение накатывает на тебя...",
   "smoke_relapse_deeper": "<i><c_error>Но что-то не так. Зависимость стала еще сильнее.",
-
   "smoke_cigar_catastrophic": "<b><c_error>Сигара бьет по тебе, как товарный поезд!",
   "smoke_cigar_fav": "<c_gold>Отличная сигара... чистое удовольствие.",
   "smoke_cigar_good": "<c_gold>Тяжелый дым. Мощно.",
   "smoke_cigar_neutral": "<c_gold>Это слишком много дыма.",
-
   "station_dryrack_placed": "<c_warning>Сушилка установлена.",
   "station_infuser_placed": "<c_dark>Инфузор установлен.",
   "station_roller_placed": "<c_smoke>Машинка для скручивания установлена.",
   "station_cuttable_placed": "<c_dark>Стол для резки установлен.",
-
   "station_dry_full": "<c_error>Заполнено. (16/16)",
   "station_dry_add_many": "<c_warning>+<count> листьев. (<total>/16)",
   "station_dry_add_one": "<c_warning>+1 лист. (<total>/16)",
@@ -496,7 +474,6 @@
   "station_dry_empty_info": "<c_info>Пусто. ПКМ с листьями табака.",
   "station_dry_status_header": "<c_dark>Сушилка (<total>/16)",
   "station_dry_next_in": "<c_ash>  Следующий через ~<seconds>с",
-
   "station_roll_in_progress": "<c_smoke>Скручивание... осталось <seconds>с.",
   "station_roll_cigar_need_flavor": "<c_gold>Загружено 3 листа! Теперь добавьте флакон ароматизатора для начала.",
   "station_roll_cigar_wrong_type": "<c_error>Нужно использовать тот же тип элитных листьев!",
@@ -511,7 +488,6 @@
   "station_roll_cigarettes_done": "<quality_color>Скручено: <amount>x <quality> сигарет.",
   "station_roll_harmony_match": "<c_success>Табак и вкус гармонируют: эффект усилен.",
   "station_roll_harmony_clash": "<c_error>Вкус конфликтует с табаком: длительность эффекта вдвое меньше.",
-
   "hookah_placed": "<c_dark>Кальян установлен.",
   "hookah_water_added": "<c_smoke>Вода добавлена.",
   "hookah_need_water": "<c_error>Сначала добавьте воду!",
@@ -531,41 +507,34 @@
   "hookah_status_charges": "<c_smoke>Заряды: <charges>/20",
   "hookah_hint_add_water": "<c_info>Сначала добавьте ведро воды",
   "hookah_hint_load": "<c_info>Заправка: нарезанный табак + ароматизатор во второй руке",
-
   "pack_only_fresh": "<c_error>В пачку можно класть только целые сигареты.",
   "pack_full": "<c_error>Пачка полна. (20/20)",
   "pack_empty": "<c_ash>Пачка пуста.",
   "pack_put_actionbar": "<c_smoke>+1 → <count>/20",
   "pack_take_actionbar": "<c_smoke>-1 → <count>/20",
-
   "patch_no_need": "<c_ash>Вам это не нужно.",
   "patch_already_active": "<c_warning>Пластырь уже активен. Осталось <min>:<sec>.",
   "patch_cooldown": "<c_error>Вы пока не можете наклеить новый пластырь! Подождите <min>м <sec>с.",
-  "patch_applied": "<c_success>Пластырь наклеен. Симптомы ослаблены на 10 минут.",
-  "patch_not_cure": "<i><c_ash>Это не вылечит вашу зависимость. Только отсрочит неизбежное.",
-
+  "patch_applied": "<c_success>Пластырь наклеен. Симптомы подавлены на 10 минут.",
+  "patch_not_cure": "<i><c_ash>Зависимость сохраняется, даже пока симптомы подавлены.",
   "machine_auto_dry_placed": "<c_success>Авто-сушилка установлена!",
   "machine_cutting_placed": "<c_success>Машина для резки установлена!",
   "machine_rolling_placed": "<c_success>Скручивающий пресс установлен!",
   "machine_packing_placed": "<c_success>Упаковочный пресс установлен!",
-
   "machine_fuel_added": "<c_ember>Топливо добавлено! (<seconds>с)",
   "machine_fuel_full": "<c_error>В машине уже полный запас топлива (64).",
   "machine_no_fuel": "<c_error>⚠ Нет топлива!",
   "machine_no_fuel_short": "⚠ Нет топлива!",
-
   "machine_none": "Нет",
   "machine_status_empty": "Пусто",
   "machine_status_ready": "Готово",
   "machine_status_need": "Нужно:",
-
   "machine_word_flavor": "вкус",
   "machine_word_tobacco": "табак",
   "machine_word_paper": "бумага",
   "machine_word_cigarettes": "сигареты",
   "machine_word_cardboard": "картон",
   "machine_word_dye": "краситель",
-
   "machine_auto_dry_full": "<c_error>Заполнено! (4/4)",
   "machine_auto_dry_add_multiple": "<c_warning>+<count> листьев (<total>/4)",
   "machine_auto_dry_add_single": "<c_warning>+1 лист (<total>/4)",
@@ -574,13 +543,11 @@
   "machine_auto_dry_status_leaves": "<c_smoke>Листья: <count>/4",
   "machine_auto_dry_status_entry": "<c_smoke>  <type>: <level_color><level></level_color> (<time>с)",
   "machine_auto_dry_use_hint": "<c_info>Использование: листья, топливные гранулы или пустая рука",
-
   "machine_cutting_already_processing": "<c_error>Уже в процессе!",
   "machine_cutting_leaf_loaded": "<c_smoke>Лист загружен. Резка...",
   "machine_cutting_status_header": "<c_dark>Машина для резки: <status>",
   "machine_cutting_status_fuel": "<fuel_color>Топливо: <seconds>с",
   "machine_cutting_use_hint": "<c_info>Использование: сухие листья, топливные гранулы или пустая рука",
-
   "machine_rolling_different_flavor": "<c_error>Уже установлен другой вкус!",
   "machine_rolling_flavor_set": "<c_success>Вкус установлен: <type>",
   "machine_rolling_tobacco_full": "<c_error>Слот для табака заполнен!",
@@ -594,7 +561,6 @@
   "machine_rolling_paper_line": "<color>Бумага: <amount>/1",
   "machine_rolling_fuel_line": "<color>Топливо: <seconds>с",
   "machine_rolling_use_hint": "<c_info>Использование: нарезанный табак, ароматизатор, бумага, топливо или пустая рука",
-
   "machine_packing_only_fresh": "<c_error>Только целые сигареты!",
   "machine_packing_different_type": "<c_error>Уже загружен другой тип!",
   "machine_packing_cigarettes_loaded": "<c_smoke>Сигареты загружены (<count>/<max>)",
@@ -609,7 +575,6 @@
   "machine_packing_card_line": "<color>>Картон: <count>/1",
   "machine_packing_dye_line": "<color>Краситель: <color_name>",
   "machine_packing_use_hint": "<c_info>Использование: сигареты, картон, краситель или пустая рука",
-
   "machine_infuser_header": "<c_dark>═══ Инфузор ═══",
   "machine_infuser_hint_main": "<c_smoke>Держите сырье в главной руке",
   "machine_infuser_hint_off": "<c_smoke>Держите стеклянную колбу во второй руке",
@@ -618,13 +583,11 @@
   "machine_infuser_need_bottle": "<c_error>Держите стеклянную колбу во второй руке!",
   "machine_infuser_unknown": "<c_error>Неизвестный ингредиент.",
   "machine_infuser_brewed": "<c_success>Экстракт <type> сварен!",
-
   "util_timer_not_rack": "<c_error>Это не Сушилка!",
   "util_timer_empty": "<c_ash>Сушилка пуста!",
   "util_timer_header": "<c_dark>═══ Статус сушки ═══",
   "util_timer_leaves": "<c_smoke>Листья: <count>",
   "util_timer_entry": "<c_smoke>├ <type>: <seconds>с (<level>)",
-
   "util_strip_need_tobacco": "<i><c_error>Возьмите нарезанный табак во вторую руку!",
   "util_strip_header": "<c_dark>═══ Результат теста ═══",
   "util_strip_quality_bad": "<c_smoke>Качество: <b><c_error>ПЛОХОЕ",
@@ -637,7 +600,6 @@
   "util_strip_desc_good": "<i><c_ash>Хорошая нарезка. Лучшие скрутки.",
   "util_strip_desc_perfect": "<i><c_ash>Идеально. Максимальный бонус к качеству.",
   "util_strip_desc_unknown": "<i><c_ash>Ошибка чтения.",
-
   "packing_placed": "<c_dark>Упаковочная машинка установлена.",
   "packing_hint_cigarettes": "<c_info>Кликните сигаретами (1-20).",
   "packing_only_fresh": "<c_error>В пачку можно класть только целые сигареты.",
@@ -648,32 +610,26 @@
   "packing_crank_done": "<c_success>  [■■■■■] Готово!  ",
   "packing_ready_collect": "<c_success>Пачка готова! Кликните, чтобы забрать.",
   "packing_collected": "<c_success>Пачка собрана! (<count> сигарет)",
-
   "machine_dismantle_progress": "<c_ember>Снос машинки: <bar>",
-
   "blending_placed": "<c_gold>Стол для смешивания установлен.",
   "seed_speed_fast": "Быстрый рост",
   "seed_speed_medium": "Средний рост",
   "seed_speed_slow": "Медленный рост",
   "seed_speed_very_slow": "Очень медленный рост",
-
   "cut_quality_perfect": "Идеальная нарезка",
   "cut_quality_good": "Хорошая нарезка",
   "cut_quality_rough": "Грубая нарезка",
   "cut_quality_bad": "Плохая нарезка",
-
   "cig_status_fresh": "Целая",
   "cig_status_half": "Наполовину выкурена",
   "cig_status_almost_done": "Почти истлела",
   "cig_status_last_drag": "Последняя затяжка",
   "cig_status_smoldering": "Тлеет",
   "cig_status_extinguished": "Потушена (<left>/<max>)",
-
   "word_raw": "Сырой",
   "word_elite": "Элитный",
   "word_premium": "Премиум",
   "word_unknown_cigarette": "Неизвестная сигарета",
-
   "type_mint": "Мята",
   "type_coffee": "Кофе",
   "type_caramel": "Карамель",
@@ -682,17 +638,14 @@
   "type_spice": "Острое",
   "type_herbal": "Травы",
   "type_shadow": "Тень",
-
   "tobacco_virginia": "Вирджиния",
   "tobacco_burley": "Берли",
   "tobacco_oriental": "Ориентал",
   "tobacco_dark_fired": "Дарк Файрд",
-
   "quality_standard": "Стандартная",
   "quality_golden": "Золотая",
   "quality_blue": "Синяя",
   "quality_vintage": "Винтажная",
-
   "color_white": "Белый",
   "color_orange": "Оранжевый",
   "color_magenta": "Пурпурный",
@@ -709,13 +662,11 @@
   "color_green": "Зеленый",
   "color_red": "Красный",
   "color_black": "Черный",
-
   "drying_level_raw": "Сырой",
   "drying_level_damp": "Влажный",
   "drying_level_dried": "Высушенный",
   "drying_level_perfect": "Идеальный",
   "drying_level_overdried": "Пересохший",
-
   "drying_quality_underdried": "Недосушенный",
   "drying_quality_perfect": "Идеальный",
   "drying_quality_overdried": "Пересохший",
@@ -727,12 +678,10 @@
   "death_severe_2": "<gray><player> не пережил ломку.",
   "death_severe_3": "<gray><player> слишком сильно нуждался в перекуре.",
   "death_severe_4": "<gray><player> выкашлял свой последний вздох.",
-
   "achievement_blank": "",
   "achievement_unlocked_header": "<b><c_gold>  ★ ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО ★",
   "achievement_unlocked_name": "<c_gold>  <name>",
   "achievement_unlocked_desc": "<i><c_ash>  <desc>",
-
   "withdrawal_swing_miss_1": "<i><c_ember>Ваши руки затряслись в неподходящий момент.",
   "withdrawal_swing_miss_2": "<i><c_ember>Вы промахнулись — из-за дрожи.",
   "withdrawal_swing_miss_3": "<i><c_ember>Ваш прицел сбился.",
@@ -743,7 +692,6 @@
   "withdrawal_mining_interrupt_4": "<i><c_ember>Тяга ударила прямо во время взмаха.",
   "withdrawal_fake_ore_vanish": "<i><c_ash>...это был просто камень.",
   "withdrawal_bow_tremble": "<i><c_ember>Ваша рука дрогнула при выстреле...",
-
   "cough_tickle_2": "<i><c_smoke>В горле пересохло...",
   "cough_tickle_3": "<i><c_smoke>Что-то застряло в горле...",
   "cough_tickle_4": "<i><c_smoke>В груди сперло...",
@@ -754,7 +702,6 @@
   "chat_insert_light_1": "*кхм*",
   "chat_insert_light_2": "*покашливает*",
   "chat_insert_light_3": "*прочищает горло*",
-
   "chat_insert_heavy_1": "*кхэ-кхэ*",
   "chat_insert_heavy_2": "*сильно кашляет*",
   "chat_insert_heavy_3": "*хрипит*",
@@ -775,9 +722,7 @@
   "withdrawal_cue_rain": "<i><c_smoke>Дождь навевает воспоминания о теплом, едком дыме... вы чувствуете фантомную тягу.",
   "withdrawal_cue_group": "<i><c_smoke>В толпе становится душно... в памяти всплывает вкус табака.",
   "withdrawal_claustrophobia_damage": "<i><c_error>Вам не хватает воздуха. Стены словно сжимаются вокруг вас...",
-
   "withdrawal_pre_warning": "<i><c_smoke>У вас возникло легкое желание покурить...",
-
   "withdrawal_stage_up_physical_1": "<i><c_error>В легких появилось легкое жжение. Вы чувствуете физическую слабость...",
   "withdrawal_stage_up_physical_2": "<i><c_error>Ваши конечности слегка дрожат. Организм настойчиво требует никотина...",
   "withdrawal_stage_up_physical_3": "<i><c_error>Тело кажется тяжелым и разбитым. Началась полноценная физическая ломка...",
@@ -786,17 +731,14 @@
   "withdrawal_stage_up_psychological_2": "<i><c_smoke>Фантомный запах табака преследует вас повсюду. Разум попался на крючок...",
   "withdrawal_stage_up_psychological_3": "<i><c_smoke>В голове начинает звучать навязчивый шепот. Разум полностью подчинен зависимости...",
   "withdrawal_stage_up_psychological_4": "<i><c_smoke>Ваше сознание полностью расколото. Начался тяжелый психоз зависимости...",
-
   "craving_light_1": "<i><c_smoke>Перекур сейчас бы не помешал...",
   "craving_light_2": "<i><c_smoke>Ваши пальцы слегка подергиваются.",
   "craving_light_3": "<i><c_smoke>Вы ловите себя на мысли, что тянетесь в карман.",
-
   "craving_medium_1": "<i><c_ash>Всего одну сигарету. Только одну.",
   "craving_medium_2": "<i><c_ash>Ваши руки немного дрожат.",
   "craving_medium_3": "<i><c_ash>Тяга гложет вас изнутри.",
   "craving_medium_4": "<i><c_ash>Вы почти чувствуете этот вкус...",
   "craving_medium_5": "<i><c_ash>Кажется, все вокруг курят. Или нет?",
-
   "craving_heavy_1": "<i><c_ember>ОДНА СИГАРЕТА. ЭТО ВСЁ, ЧТО НУЖНО.",
   "craving_heavy_2": "<i><c_ember>Голова раскалывается. Заставь это прекратиться.",
   "craving_heavy_3": "<i><c_ember>Вы слышите, как кто-то рядом чиркает зажигалкой...",
@@ -805,7 +747,6 @@
   "craving_heavy_6": "<i><c_ember>Тело кричит, требуя никотин.",
   "craving_heavy_7": "<i><c_ember>Клянетесь, вы чувствуете запах табака...",
   "craving_heavy_8": "<i><c_ember>Хватит сопротивляться. Ты знаешь, что тебе нужно.",
-
   "craving_severe_1": "<i><c_error>ТЫ БОЛЬШЕ НЕ МОЖЕШЬ ЭТО ТЕРПЕТЬ.",
   "craving_severe_2": "<i><c_error>ЗА. КУ. РИ.",
   "craving_severe_3": "<i><c_error>Всё болит. Одна затяжка, и всё пройдет.",
@@ -814,12 +755,9 @@
   "craving_severe_6": "<i><c_error>Зачем ты это с собой делаешь?",
   "craving_severe_7": "<i><c_error>Одна сигарета тебя не убьет. А вот это может.",
   "craving_severe_8": "<i><c_error>В глазах мутнеет. Это реально?",
-
   "fire_hazard_ash_dropped": "<i><c_ember>Из ваших дрожащих рук выпал пепел...",
-
   "passive_smoke_addicted": "<i><c_ember>Кто-то рядом закурил... тяга усиливается.",
   "passive_smoke_clean": "<i><c_smoke>Вы чувствуете запах сигаретного дыма поблизости...",
-
   "insomnia_severe_1": "<i><c_error>Тело требует никотина. Уснуть невозможно.",
   "insomnia_severe_2": "<i><c_error>Вы ворочаетесь. Тяга не дает покоя.",
   "insomnia_severe_3": "<i><c_error>Каждый раз, закрывая глаза, вы видите сигарету.",
@@ -828,12 +766,9 @@
   "insomnia_moderate_2": "<i><c_ember>Мысли путаются. Может, сначала один перекур?",
   "insomnia_moderate_3": "<i><c_ember>Кровать кажется неудобной. Всё кажется неправильным.",
   "insomnia_hint": "<i><c_ash>Перекур бы это исправил...",
-
   "chat_cough_insert": "*кхм*",
-
   "breathing_cant_breathe": "<i><c_error>Вам нечем дышать...",
   "breathing_lungs_burn": "<i><c_ember>Легкие горят...",
-
   "achievement.first_drag.name": "Первая затяжка",
   "achievement.first_drag.desc": "Выкурить свою первую сигарету",
   "achievement.chain_smoker.name": "Заядлый курильщик",
@@ -873,5 +808,66 @@
   "achievement.insomnia.name": "Бессонница",
   "achievement.insomnia.desc": "Не суметь уснуть из-за зависимости",
   "achievement.pipe_broken.name": "Старый друг",
-  "achievement.pipe_broken.desc": "Сломать трубку от частого использования"
+  "achievement.pipe_broken.desc": "Сломать трубку от частого использования",
+  "cmd_target_offline": "<c_error>Игрок не найден или не в сети.",
+  "cmd_target_required": "<c_warning>Укажите игрока: --player <имя>.",
+  "cmd_invalid_argument": "<c_error>Неверный аргумент. Проверьте подсказки Tab.",
+  "cmd_top_loading": "<c_smoke>Загружаем таблицу лидеров…",
+  "cmd_help_player": [
+    "<c_gold>/cigaro stats [игрок] <c_smoke>— статистика (чужая — администратору)",
+    "<c_gold>/cigaro top <c_smoke>— топ курильщиков",
+    "<c_gold>/cigaro achievements <c_smoke>— достижения"
+  ],
+  "cmd_help_admin": [
+    "<c_gold>/cigaro give <c_smoke>— выдача предметов",
+    "<c_gold>/cigaro debug <c_smoke>— инструменты отладки",
+    "<c_gold>/cigaro reload <c_smoke>— перезагрузить настройки и язык",
+    "<c_gold>/cigaro analytics <c_smoke>— отчёт в консоли",
+    "<c_smoke>Для give и debug: --player <имя> в конце команды."
+  ],
+  "cmd_invalid_amount": "<c_error>Количество должно быть целым числом от 1 до 64.",
+  "cmd_give_simple_success": "<c_success>Предметы выданы.",
+  "cmd_give_tobacco_usage": "<c_warning>Синтаксис: cut <сорт> [bad|rough|good|perfect] [сушка] [normal|elite]; leaf <сорт> [сушка] [normal|elite].",
+  "cmd_debug_blood_start": "<c_success>Тест частиц запущен.",
+  "cmd_debug_blood_at": "<c_smoke><label>: ",
+  "habit_rain_mild": "<i><c_smoke>Дождь навевает мысли о перекуре.",
+  "habit_rain_strong": "<i><c_smoke>Дождь напоминает о дыме. Руки ищут сигарету.",
+  "habit_rain_recovered": "<i><c_smoke>Дождь напомнил о прежней привычке курить.",
+  "habit_group_mild": "<i><c_smoke>В компании вспоминается перекур.",
+  "habit_group_strong": "<i><c_smoke>Среди людей особенно хочется закурить.",
+  "habit_group_recovered": "<i><c_smoke>Компания напомнила о прежних совместных перекурах.",
+  "habit_fire_mild": "<i><c_smoke>У огня было бы приятно сделать перекур.",
+  "habit_fire_strong": "<i><c_smoke>Тепло огня напоминает о сигарете. Хочется закурить.",
+  "habit_fire_recovered": "<i><c_smoke>Огонь напомнил о старых перекурах.",
+  "habit_combat_mild": "<i><c_smoke>Бой закончился. Сейчас бы передохнуть с сигаретой.",
+  "habit_combat_strong": "<i><c_smoke>Адреналин уходит, а мысли возвращаются к сигарете.",
+  "habit_combat_recovered": "<i><c_smoke>После боя вспомнились прежние перекуры.",
+  "habit_meal_mild": "<i><c_smoke>После еды вспомнился привычный перекур.",
+  "habit_meal_strong": "<i><c_smoke>После еды особенно хочется закурить.",
+  "habit_meal_recovered": "<i><c_smoke>После еды мелькнула мысль о старой привычке.",
+  "habit_wake_mild": "<i><c_smoke>После сна вспомнилась первая сигарета.",
+  "habit_wake_strong": "<i><c_smoke>Проснувшись, ты привычно думаешь о сигарете.",
+  "habit_wake_recovered": "<i><c_smoke>Утро напомнило о прежней первой сигарете.",
+  "habit_smoker_mild": "<i><c_smoke>Чужой дым напоминает о перекуре.",
+  "habit_smoker_strong": "<i><c_smoke>Рядом курят, и желание закурить становится сильнее.",
+  "habit_smoker_recovered": "<i><c_smoke>Чужой дым напомнил о прежних перекурах.",
+  "habit_place_mild": "<i><c_smoke>Это место напоминает о перекуре.",
+  "habit_place_strong": "<i><c_smoke>Здесь ты привык курить. Хочется достать сигарету.",
+  "habit_place_recovered": "<i><c_smoke>Знакомое место напомнило о прежней привычке.",
+  "habit_night_mild": "<i><c_smoke>Ночь напоминает о спокойном перекуре.",
+  "habit_night_strong": "<i><c_smoke>Ночью особенно хочется закурить.",
+  "habit_night_recovered": "<i><c_smoke>Ночь напомнила о прежних перекурах.",
+  "tobacco_ancient": "Древний",
+  "tobacco_caravan": "Караванный",
+  "station_roll_caravan_clash": "<c_warning>Вкус конфликтует с табаком: длительность снижена на 25%.",
+  "item_caravan_seeds_story": [
+    "",
+    "<c_ash>Семена из дальних краёв.",
+    "<c_smoke>Привыкли к чужим вкусам."
+  ],
+  "item_caravan_leaf_story": [
+    "",
+    "<c_ash>Суховатый лист с пряным",
+    "<c_ash>дорожным ароматом."
+  ]
 }

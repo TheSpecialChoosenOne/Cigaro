@@ -25,15 +25,26 @@ public class CigaroTabCompleter implements TabCompleter {
     ) {
         if (args.length == 1) {
             List<String> base = new ArrayList<>(
-                    List.of("stats", "give", "reload", "top", "achievements")
+                    List.of("help", "stats", "top", "achievements")
             );
             if (sender.hasPermission("cigaro.admin")) {
-                base.add("debug");
+                base.addAll(List.of("give", "reload", "debug", "analytics"));
             }
             return filter(base, args[0]);
         }
 
-        if (args[0].equalsIgnoreCase("give")) {
+        if (sender.hasPermission("cigaro.admin") && args.length >= 3 && args[0].equalsIgnoreCase("give")
+                && args[args.length - 2].equalsIgnoreCase("--amount"))
+            return filter(List.of("1", "4", "16", "32", "64"), args[args.length - 1]);
+        if (sender.hasPermission("cigaro.admin") && args.length >= 3
+                && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("debug"))
+                && args[args.length - 1].startsWith("--"))
+            return filter(args[0].equalsIgnoreCase("give") ? List.of("--player", "--amount") : List.of("--player"), args[args.length - 1]);
+        if (args.length >= 2 && args[args.length - 2].equalsIgnoreCase("--player") && sender.hasPermission("cigaro.admin"))
+            return filter(org.bukkit.Bukkit.getOnlinePlayers().stream().map(org.bukkit.entity.Player::getName).toList(), args[args.length - 1]);
+        if (args[0].equalsIgnoreCase("stats") && args.length == 2 && sender.hasPermission("cigaro.admin"))
+            return filter(org.bukkit.Bukkit.getOnlinePlayers().stream().map(org.bukkit.entity.Player::getName).toList(), args[1]);
+        if (args[0].equalsIgnoreCase("give") && sender.hasPermission("cigaro.admin")) {
             if (args.length == 2) {
                 return filter(List.of(
                         "seeds", "leaf", "cut", "flavor",
@@ -55,10 +66,16 @@ public class CigaroTabCompleter implements TabCompleter {
                             filter(tobaccoTypes(), args[2]);
                     case "flavor", "cigarette", "cigar" ->
                             filter(cigaretteTypes(), args[2]);
+                    case "pack" -> filter(Arrays.stream(org.bukkit.DyeColor.values()).map(c -> c.name().toLowerCase(java.util.Locale.ROOT)).toList(), args[2]);
                     default -> List.of();
                 };
             }
 
+            if (args.length == 4 && args[1].equalsIgnoreCase("cut")) return filter(List.of("bad", "rough", "good", "perfect"), args[3]);
+            if ((args.length == 4 && args[1].equalsIgnoreCase("leaf")) || (args.length == 5 && args[1].equalsIgnoreCase("cut")))
+                return filter(List.of("raw", "damp", "dried", "perfect", "overdried"), args[args.length - 1]);
+            if ((args.length == 5 && args[1].equalsIgnoreCase("leaf")) || (args.length == 6 && args[1].equalsIgnoreCase("cut")))
+                return filter(List.of("normal", "elite"), args[args.length - 1]);
             if (args.length == 4) {
                 if (args[1].equalsIgnoreCase("flavor")) {
                     return filter(

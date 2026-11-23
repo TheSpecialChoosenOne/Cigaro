@@ -38,11 +38,13 @@ public class CigaretteType {
     public static final CigaretteType SHADOW = register(new CigaretteType("SHADOW", "Shadow", CigaroColors.SHADOW, Material.ECHO_SHARD, 70));
 
     public static CigaretteType register(CigaretteType type) {
-        REGISTRY.put(type.name(), type);
+        if (REGISTRY.putIfAbsent(type.name(), type) != null) {
+            throw new IllegalArgumentException("Cigarette type already registered: " + type.name());
+        }
         return type;
     }
 
-    public static Collection<CigaretteType> values() { return REGISTRY.values(); }
+    public static Collection<CigaretteType> values() { return java.util.Collections.unmodifiableCollection(REGISTRY.values()); }
 
     public static CigaretteType valueOf(String name) {
         CigaretteType type = REGISTRY.get(name.toUpperCase());

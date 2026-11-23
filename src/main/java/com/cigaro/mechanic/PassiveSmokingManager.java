@@ -77,7 +77,7 @@ public class PassiveSmokingManager implements Listener {
 
             PlayerData data = plugin.getPlayerDataManager().getData(nearbyUuid);
 
-            if (data.getAddictionStage() >= 2
+            if (data.getAddictionStage() >= 2 && !data.isPatchActive()
                     && !plugin.getWithdrawalTask().isInGracePeriod(data)) {
                 nearby.sendMessage(
                         plugin.getLanguageManager().get(source.getAddictedKey()));

@@ -35,12 +35,17 @@ public class TobaccoType {
     public static final TobaccoType ORIENTAL = register(new TobaccoType("ORIENTAL", "Oriental", 8000, 2, new String[]{"SAVANNA", "DESERT", "BADLANDS"}, 0.05, 2));
     public static final TobaccoType DARK_FIRED = register(new TobaccoType("DARK_FIRED", "Dark Fired", 10000, 3, new String[]{"TAIGA", "SNOWY_TAIGA", "GROVE"}, 0.05, 3));
 
+    public static final TobaccoType ANCIENT = register(new TobaccoType("ANCIENT", "Ancient", 12000, 1, new String[]{}, 0, 4));
+    public static final TobaccoType CARAVAN = register(new TobaccoType("CARAVAN", "Caravan", 7000, 1, new String[]{}, 0, 5));
+
     public static TobaccoType register(TobaccoType type) {
-        REGISTRY.put(type.name(), type);
+        if (REGISTRY.putIfAbsent(type.name(), type) != null) {
+            throw new IllegalArgumentException("Tobacco type already registered: " + type.name());
+        }
         return type;
     }
 
-    public static Collection<TobaccoType> values() { return REGISTRY.values(); }
+    public static Collection<TobaccoType> values() { return java.util.Collections.unmodifiableCollection(REGISTRY.values()); }
 
     public static TobaccoType valueOf(String name) {
         TobaccoType type = REGISTRY.get(name.toUpperCase());
@@ -67,6 +72,6 @@ public class TobaccoType {
     }
 
     public static TobaccoType[] getRandomTypes() {
-        return REGISTRY.values().toArray(new TobaccoType[0]);
+        return REGISTRY.values().stream().filter(type -> type.nativeBiomes.length > 0).toArray(TobaccoType[]::new);
     }
 }

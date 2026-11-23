@@ -34,6 +34,20 @@
           "type": "minecraft:model",
           "model": "cigaro:item/tobacco_seeds_dark_fired"
         }
+      },
+      {
+        "when": "tobacco_seeds_ancient",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_ancient"
+        }
+      },
+      {
+        "when": "tobacco_seeds_caravan",
+        "model": {
+          "type": "minecraft:model",
+          "model": "cigaro:item/tobacco_seeds_caravan"
+        }
       }
     ]
   }

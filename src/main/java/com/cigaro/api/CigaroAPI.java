@@ -4,13 +4,53 @@ import com.cigaro.Cigaro;
 import com.cigaro.data.*;
 import com.cigaro.station.*;
 import org.bukkit.Location;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import com.cigaro.mechanic.TobaccoFlavorCompatibility;
 
 public class CigaroAPI {
+
+    private static final Map<String, CigaretteType> ADDON_TOBACCO_FLAVORS = new HashMap<>();
+    private static final Map<CigaretteType, List<SmokeEffect>> ADDON_FLAVOR_EFFECTS = new HashMap<>();
+
+    public static void registerFlavor(CigaretteType type, List<SmokeEffect> effects) {
+        java.util.Objects.requireNonNull(type);
+        if (!Bukkit.isPrimaryThread()) throw new IllegalStateException("Must register on the server thread");
+        if (!type.name().matches("[A-Z0-9]+_[A-Z0-9_]+")) throw new IllegalArgumentException("Use an addon-prefixed ID");
+        List<SmokeEffect> safe = List.copyOf(effects);
+        CigaretteType.register(type);
+        ADDON_FLAVOR_EFFECTS.put(type, safe);
+    }
+
+    public static List<SmokeEffect> getRegisteredFlavorEffects(CigaretteType type) {
+        return ADDON_FLAVOR_EFFECTS.get(type);
+    }
+
+    public static void registerTobacco(TobaccoType tobacco, CigaretteType defaultFlavor,
+                                       Set<CigaretteType> matched, Set<CigaretteType> clashed) {
+        java.util.Objects.requireNonNull(tobacco);
+        java.util.Objects.requireNonNull(defaultFlavor);
+        if (!Bukkit.isPrimaryThread()) throw new IllegalStateException("Must register on the server thread");
+        if (!tobacco.name().matches("[A-Z0-9]+_[A-Z0-9_]+")) throw new IllegalArgumentException("Use an addon-prefixed ID");
+        if (!CigaretteType.values().contains(defaultFlavor)) throw new IllegalArgumentException("Flavor must be registered first");
+        if (!java.util.Collections.disjoint(matched, clashed)) throw new IllegalArgumentException("Conflicting flavors");
+        if (!CigaretteType.values().containsAll(matched) || !CigaretteType.values().containsAll(clashed))
+            throw new IllegalArgumentException("All flavors must be registered");
+        TobaccoType.register(tobacco);
+        TobaccoFlavorCompatibility.registerProfile(tobacco, matched, clashed);
+        ADDON_TOBACCO_FLAVORS.put(tobacco.name(), defaultFlavor);
+    }
+
+    public static CigaretteType getRegisteredTobaccoFlavor(TobaccoType tobacco) {
+        return tobacco == null ? null : ADDON_TOBACCO_FLAVORS.get(tobacco.name());
+    }
 
 
     public static PlayerData getPlayerData(UUID uuid) {
@@ -28,17 +68,21 @@ public class CigaroAPI {
     }
 
     public static void setPhysicalScore(UUID uuid, double score) {
+        if (!Double.isFinite(score)) throw new IllegalArgumentException("Score must be finite");
         PlayerData data = getPlayerData(uuid);
         if (data != null) {
             data.setPhysicalScore(score);
+            data.setPhysicalStage(data.getTargetPhysicalStage());
             Cigaro.getInstance().getPlayerDataManager().save(uuid);
         }
     }
 
     public static void setPsychologicalScore(UUID uuid, double score) {
+        if (!Double.isFinite(score)) throw new IllegalArgumentException("Score must be finite");
         PlayerData data = getPlayerData(uuid);
         if (data != null) {
             data.setPsychologicalScore(score);
+            data.setPsychologicalStage(data.getTargetPsychologicalStage());
             Cigaro.getInstance().getPlayerDataManager().save(uuid);
         }
     }
@@ -176,10 +220,14 @@ public class CigaroAPI {
     public static ItemStack extractLeafFromRollingStation(Location loc) {
         RollingStation station = Cigaro.getInstance().getStationManager().getRollingStation(loc);
         if (station == null || !station.hasLeaf()) return null;
+        if (station.isCigarMode() || station.hasFlavor()) return null;
 
         ItemStack item;
-        if (station.isCigarMode()) {
-            item = Cigaro.getInstance().getItemManager().createTobaccoLeaf(station.getLeafType(), station.isEliteLeaf(), 300);
+        if (station.isBlend()) {
+            item = Cigaro.getInstance().getItemManager().createBlendedCutTobacco(
+                    station.getBlend(), station.isEliteLeaf(), station.getDryingLevel(),
+                    station.getDryingLevel() != null ? Cigaro.getInstance().getConfigManager().getThresholdStart(station.getDryingLevel()) : 0,
+                    station.getCutQuality(), 1);
         } else {
             item = Cigaro.getInstance().getItemManager().createCutTobacco(
                     station.getLeafType(), station.isEliteLeaf(), station.getDryingLevel(),

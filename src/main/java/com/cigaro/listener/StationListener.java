@@ -493,8 +493,11 @@ public class StationListener implements Listener {
                 ? plugin.getItemManager().createBlendedCigar(
                         station.getBlend(), CigaretteQuality.VINTAGE, 1, harmony)
                 : plugin.getItemManager().createCigar(type, CigaretteQuality.VINTAGE, 1, harmony);
+        if (!station.isBlend()) plugin.getItemManager().setProductTobacco(cigar, station.getLeafType());
         player.getInventory().addItem(cigar);
         notifyHarmony(player, harmony);
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.CIGAR_CREATED, player, station.getLocation(), cigar));
 
         station.clear();
         plugin.getStationManager().updateRollingStationDisplay(station);
@@ -522,8 +525,11 @@ public class StationListener implements Listener {
                         station.getBlend(), quality, amount, maxPuffs, maxPuffs, harmony)
                 : plugin.getItemManager().createCigarette(
                         type, quality, amount, maxPuffs, maxPuffs, harmony);
+        if (!station.isBlend()) plugin.getItemManager().setProductTobacco(cigarettes, station.getLeafType());
         player.getInventory().addItem(cigarettes);
         notifyHarmony(player, harmony);
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.CIGARETTES_CREATED, player, station.getLocation(), cigarettes));
 
         if (quality == CigaretteQuality.VINTAGE) {
             plugin.getAchievementManager().grant(player, CigaroAchievement.PERFECTIONIST);
@@ -579,8 +585,10 @@ public class StationListener implements Listener {
     }
 
     private void notifyHarmony(Player player, FlavorHarmony harmony) {
-        if (harmony == FlavorHarmony.MATCHED) {
+        if (harmony == FlavorHarmony.MATCHED || harmony == FlavorHarmony.CARAVAN_MATCHED) {
             player.sendMessage(lang().get("station_roll_harmony_match"));
+        } else if (harmony == FlavorHarmony.CARAVAN_CLASHED) {
+            player.sendMessage(lang().get("station_roll_caravan_clash"));
         } else if (harmony == FlavorHarmony.CLASHED) {
             player.sendMessage(lang().get("station_roll_harmony_clash"));
         }

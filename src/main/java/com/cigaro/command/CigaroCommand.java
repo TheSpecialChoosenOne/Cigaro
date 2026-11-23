@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,6 +29,7 @@ public class CigaroCommand implements CommandExecutor {
 
     private volatile List<ResolvedLeaderEntry> cachedTop = List.of();
     private volatile long cachedTopAt = 0L;
+    private final List<CommandSender> topWaiters = new ArrayList<>();
     private final AtomicBoolean topRefreshing = new AtomicBoolean(false);
     private static final long TOP_CACHE_TTL_MS = 60_000L;
 
@@ -85,12 +88,12 @@ public class CigaroCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
                              @NotNull String label, @NotNull String[] args) {
-        if (args.length == 0) { showHelp(sender); return true; }
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")) { showHelp(sender); return true; }
         switch (args[0].toLowerCase()) {
-            case "stats" -> handleStats(sender);
-            case "give" -> handleGive(sender, args);
+            case "stats" -> handleStats(sender, args);
+            case "give" -> dispatchTarget(sender, args, false);
             case "reload" -> handleReload(sender);
-            case "debug" -> handleDebug(sender, args);
+            case "debug" -> dispatchTarget(sender, args, true);
             case "top" -> handleTop(sender);
             case "achievements" -> handleAchievements(sender);
             case "analytics" -> handleAnalytics(sender);
@@ -99,65 +102,114 @@ public class CigaroCommand implements CommandExecutor {
         return true;
     }
 
+    private void dispatchTarget(CommandSender sender, String[] original, boolean debug) {
+        if (!sender.hasPermission("cigaro.admin")) { sender.sendMessage(msg("cmd_no_permission")); return; }
+        if (original.length == 1) {
+            sender.sendMessage(msg(debug ? "cmd_debug_header" : "cmd_give_header"));
+            for (Component line : msgList(debug ? "cmd_debug_help" : "cmd_give_help")) sender.sendMessage(line);
+            return;
+        }
+        List<String> positional = new ArrayList<>();
+        String targetName = null;
+        Integer amount = null;
+        for (int i = 0; i < original.length; i++) {
+            if (original[i].equalsIgnoreCase("--player") || original[i].equalsIgnoreCase("--amount")) {
+                boolean isPlayer = original[i].equalsIgnoreCase("--player");
+                if (++i >= original.length || (isPlayer ? targetName != null : amount != null || debug)) {
+                    sender.sendMessage(msg("cmd_invalid_argument")); return;
+                }
+                if (isPlayer) targetName = original[i];
+                else try { amount = Integer.parseInt(original[i]); if (amount < 1 || amount > 64) throw new NumberFormatException(); }
+                catch (NumberFormatException e) { sender.sendMessage(msg("cmd_invalid_amount")); return; }
+            } else positional.add(original[i]);
+        }
+        Player target;
+        if (targetName != null) {
+            target = Bukkit.getPlayerExact(targetName);
+            if (target == null) { sender.sendMessage(msg("cmd_target_offline")); return; }
+        } else if (sender instanceof Player player) target = player;
+        else { sender.sendMessage(msg("cmd_target_required")); return; }
+        String[] args = positional.toArray(String[]::new);
+        if (debug) handleDebug(sender, target, args); else handleGive(sender, target, args, amount);
+    }
+
+    private void give(Player player, ItemStack item, Integer amount) {
+        int remaining = amount == null ? item.getAmount() : amount;
+        int max = item.getMaxStackSize();
+        while (remaining > 0) {
+            ItemStack batch = item.clone();
+            batch.setAmount(Math.min(remaining, max));
+            remaining -= batch.getAmount();
+            for (ItemStack overflow : player.getInventory().addItem(batch).values())
+                player.getWorld().dropItemNaturally(player.getLocation(), overflow);
+        }
+    }
+
     private void showHelp(CommandSender sender) {
         sender.sendMessage(Component.empty());
         sender.sendMessage(msg("cmd_help_header",
                 Placeholder.unparsed("version", plugin.getPluginMeta().getVersion())));
         sender.sendMessage(msg("cmd_help_subtitle"));
         sender.sendMessage(Component.empty());
-        for (Component line : msgList("cmd_help_lines")) {
-            sender.sendMessage(line);
-        }
+        for (Component line : msgList("cmd_help_player")) sender.sendMessage(line);
+        if (sender.hasPermission("cigaro.admin"))
+            for (Component line : msgList("cmd_help_admin")) sender.sendMessage(line);
         sender.sendMessage(Component.empty());
     }
 
-    private void handleStats(CommandSender sender) {
-        if (!(sender instanceof Player player)) { sender.sendMessage(msg("cmd_players_only")); return; }
-        if (!player.hasPermission("cigaro.use")) { player.sendMessage(msg("cmd_no_permission")); return; }
+    private void handleStats(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("cigaro.use")) { sender.sendMessage(msg("cmd_no_permission")); return; }
+        Player player;
+        if (args.length == 2 && sender.hasPermission("cigaro.admin")) {
+            player = Bukkit.getPlayerExact(args[1]);
+            if (player == null) { sender.sendMessage(msg("cmd_target_offline")); return; }
+        } else if (args.length > 1) { sender.sendMessage(msg("cmd_no_permission")); return; }
+        else if (sender instanceof Player self) player = self;
+        else { sender.sendMessage(msg("cmd_target_required")); return; }
 
         PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
         int stage = data.getAddictionStage();
 
-        player.sendMessage(Component.empty());
-        player.sendMessage(msg("cmd_stats_header"));
-        player.sendMessage(msg("cmd_stats_addiction",
+        sender.sendMessage(Component.empty());
+        sender.sendMessage(msg("cmd_stats_header"));
+        sender.sendMessage(msg("cmd_stats_addiction",
                 Placeholder.styling("stage_color", getStageColor(stage)),
                 Placeholder.unparsed("stage_name", getStageName(stage))));
-        player.sendMessage(msg("cmd_stats_total",
+        sender.sendMessage(msg("cmd_stats_total",
                 Placeholder.unparsed("total", String.valueOf(data.getTotalSmoked()))));
 
         long soberSec = data.getOnlineSoberSeconds();
         String soberStr = soberSec < 3600 ? (soberSec / 60) + "m" : String.format("%.1fh", soberSec / 3600.0);
-        player.sendMessage(msg("cmd_stats_sober", Placeholder.unparsed("time", soberStr)));
+        sender.sendMessage(msg("cmd_stats_sober", Placeholder.unparsed("time", soberStr)));
 
         CigaretteType[] types = CigaretteType.values().toArray(new CigaretteType[0]);
 
-        player.sendMessage(msg("cmd_stats_smoked_header"));
+        sender.sendMessage(msg("cmd_stats_smoked_header"));
         for (int i = 0; i < types.length; i += 2) {
             Component line = formatSmokedEntry(types[i], data);
             if (i + 1 < types.length) line = line.append(Component.text("  ")).append(formatSmokedEntry(types[i + 1], data));
-            player.sendMessage(line);
+            sender.sendMessage(line);
         }
 
-        player.sendMessage(msg("cmd_stats_tolerance_header"));
+        sender.sendMessage(msg("cmd_stats_tolerance_header"));
         for (int i = 0; i < types.length; i += 2) {
             Component line = formatToleranceEntry(types[i], data);
             if (i + 1 < types.length) line = line.append(Component.text("  ")).append(formatToleranceEntry(types[i + 1], data));
-            player.sendMessage(line);
+            sender.sendMessage(line);
         }
 
-        player.sendMessage(msg("cmd_stats_mastery",
+        sender.sendMessage(msg("cmd_stats_mastery",
                 Placeholder.unparsed("mastery", String.format("%.0f%%", data.getMastery() * 100))));
 
         if (data.isPredispositionGenerated()) {
-            player.sendMessage(msg("cmd_stats_pred_header"));
+            sender.sendMessage(msg("cmd_stats_pred_header"));
             for (CigaretteType type : types) {
-                player.sendMessage(formatPredEntry(type, data));
+                sender.sendMessage(formatPredEntry(type, data));
             }
         } else {
-            player.sendMessage(msg("cmd_stats_pred_unknown"));
+            sender.sendMessage(msg("cmd_stats_pred_unknown"));
         }
-        player.sendMessage(Component.empty());
+        sender.sendMessage(Component.empty());
     }
 
     private Component formatSmokedEntry(CigaretteType type, PlayerData data) {
@@ -183,125 +235,129 @@ public class CigaroCommand implements CommandExecutor {
                 Placeholder.unparsed("label", getPredLabel(value)));
     }
 
-    private void handleGive(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player player)) { sender.sendMessage(msg("cmd_players_only")); return; }
-        if (!player.hasPermission("cigaro.admin")) { player.sendMessage(msg("cmd_no_permission")); return; }
+    private void handleGive(CommandSender sender, Player player, String[] args, Integer overrideAmount) {
 
         if (args.length < 2) {
-            player.sendMessage(Component.empty());
-            player.sendMessage(msg("cmd_give_header"));
-            for (Component line : msgList("cmd_give_help")) player.sendMessage(line);
-            player.sendMessage(Component.empty());
+            sender.sendMessage(Component.empty());
+            sender.sendMessage(msg("cmd_give_header"));
+            for (Component line : msgList("cmd_give_help")) sender.sendMessage(line);
+            sender.sendMessage(Component.empty());
             return;
         }
 
         var im = plugin.getItemManager();
+        String kind = args[1].toLowerCase(java.util.Locale.ROOT);
+        int maxArgs = switch (kind) {
+            case "cut" -> 6; case "leaf" -> 5; case "cigarette", "cigar" -> 5;
+            case "flavor" -> 4; case "seeds", "pack" -> 3; default -> 2;
+        };
+        if (args.length > maxArgs || (overrideAmount != null && args.length == 5
+                && (kind.equals("cigar") || kind.equals("cigarette")))) {
+            sender.sendMessage(msg("cmd_invalid_argument")); return;
+        }
 
         switch (args[1].toLowerCase()) {
             case "seeds" -> {
                 if (args.length >= 3) {
                     try {
                         TobaccoType t = TobaccoType.valueOf(args[2].toUpperCase());
-                        player.getInventory().addItem(im.createTobaccoSeeds(t, 16));
-                        player.sendMessage(msg("cmd_give_seeds_type",
-                                Placeholder.unparsed("amount", "16"),
+                        give(player, im.createTobaccoSeeds(t, 16), overrideAmount);
+                        sender.sendMessage(msg("cmd_give_seeds_type",
+                                Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 16)),
                                 Placeholder.unparsed("type", plugin.getItemManager().formatTobaccoTypeName(t))));
                     } catch (IllegalArgumentException e) {
-                        player.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", tobaccoTypeList())));
+                        sender.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", tobaccoTypeList())));
                     }
                 } else {
-                    for (TobaccoType t : TobaccoType.values()) player.getInventory().addItem(im.createTobaccoSeeds(t, 4));
-                    player.sendMessage(msg("cmd_give_seeds_all"));
+                    for (TobaccoType t : TobaccoType.values()) give(player, im.createTobaccoSeeds(t, 4), overrideAmount);
+                    sender.sendMessage(msg("cmd_give_seeds_all"));
                 }
             }
             case "pack" -> {
                 DyeColor color = DyeColor.RED;
-                if (args.length >= 3) try { color = DyeColor.valueOf(args[2].toUpperCase()); } catch (IllegalArgumentException ignored) {}
-                player.getInventory().addItem(im.createCigarettePack(new ArrayList<>(), color));
-                player.sendMessage(msg("cmd_give_pack"));
+                if (args.length >= 3) try { color = DyeColor.valueOf(args[2].toUpperCase()); } catch (IllegalArgumentException e) { sender.sendMessage(msg("cmd_invalid_argument")); return; }
+                give(player, im.createCigarettePack(new ArrayList<>(), color), overrideAmount);
+                sender.sendMessage(msg("cmd_give_pack"));
             }
             case "packer" -> {
-                player.getInventory().addItem(im.createPackingMachine());
-                player.sendMessage(msg("cmd_give_packer"));
+                give(player, im.createPackingMachine(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_packer"));
             }
             case "fertilizer" -> {
-                player.getInventory().addItem(im.createTobaccoFertilizer(16));
-                player.sendMessage(msg("cmd_give_fertilizer", Placeholder.unparsed("amount", "16")));
+                give(player, im.createTobaccoFertilizer(16), overrideAmount);
+                sender.sendMessage(msg("cmd_give_fertilizer", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 16))));
             }
             case "timer" -> {
-                player.getInventory().addItem(im.createDryingTimer());
-                player.sendMessage(msg("cmd_give_timer"));
+                give(player, im.createDryingTimer(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_timer"));
             }
             case "lighter" -> {
-                player.getInventory().addItem(im.createLighterOfStats());
-                player.sendMessage(msg("cmd_give_lighter"));
+                give(player, im.createLighterOfStats(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_lighter"));
             }
             case "teststrip" -> {
-                player.getInventory().addItem(im.createTestStrip(16));
-                player.sendMessage(msg("cmd_give_teststrip", Placeholder.unparsed("amount", "16")));
+                give(player, im.createTestStrip(16), overrideAmount);
+                sender.sendMessage(msg("cmd_give_teststrip", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 16))));
             }
             case "paper" -> {
-                player.getInventory().addItem(im.createCigarettePaper(32));
-                player.sendMessage(msg("cmd_give_paper", Placeholder.unparsed("amount", "32")));
+                give(player, im.createCigarettePaper(32), overrideAmount);
+                sender.sendMessage(msg("cmd_give_paper", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 32))));
             }
             case "cardboard" -> {
-                player.getInventory().addItem(im.createCardboard(32));
-                player.sendMessage(msg("cmd_give_cardboard", Placeholder.unparsed("amount", "32")));
+                give(player, im.createCardboard(32), overrideAmount);
+                sender.sendMessage(msg("cmd_give_cardboard", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 32))));
             }
             case "fuelpellets" -> {
-                player.getInventory().addItem(im.createFuelPellets(64));
-                player.sendMessage(msg("cmd_give_fuelpellets", Placeholder.unparsed("amount", "64")));
+                give(player, im.createFuelPellets(64), overrideAmount);
+                sender.sendMessage(msg("cmd_give_fuelpellets", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 64))));
             }
             case "autodryrack" -> {
-                player.getInventory().addItem(im.createAutoDryingRack());
-                player.sendMessage(msg("cmd_give_autodryrack"));
+                give(player, im.createAutoDryingRack(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_autodryrack"));
             }
             case "cuttingmachine" -> {
-                player.getInventory().addItem(im.createCuttingMachine());
-                player.sendMessage(msg("cmd_give_cuttingmachine"));
+                give(player, im.createCuttingMachine(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_cuttingmachine"));
             }
             case "rollingpress" -> {
-                player.getInventory().addItem(im.createRollingPress());
-                player.sendMessage(msg("cmd_give_rollingpress"));
+                give(player, im.createRollingPress(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_rollingpress"));
             }
             case "packingpress" -> {
-                player.getInventory().addItem(im.createPackingPress());
-                player.sendMessage(msg("cmd_give_packingpress"));
+                give(player, im.createPackingPress(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_packingpress"));
             }
-            case "leaf" -> {
-                if (args.length >= 3) {
-                    try {
-                        TobaccoType t = TobaccoType.valueOf(args[2].toUpperCase());
-                        player.getInventory().addItem(im.createTobaccoLeaf(t, false));
-                        player.getInventory().addItem(im.createTobaccoLeaf(t, true));
-                        player.sendMessage(msg("cmd_give_leaf_type", Placeholder.unparsed("type", plugin.getItemManager().formatTobaccoTypeName(t))));
-                    } catch (IllegalArgumentException e) {
-                        player.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", tobaccoTypeList())));
-                    }
-                } else {
-                    for (TobaccoType t : TobaccoType.values()) player.getInventory().addItem(im.createTobaccoLeaf(t, false));
-                    player.getInventory().addItem(im.createTobaccoLeaf(TobaccoType.VIRGINIA, true));
-                    player.sendMessage(msg("cmd_give_leaf_all"));
+            case "leaf", "cut" -> {
+                boolean cut = args[1].equalsIgnoreCase("cut");
+                if (args.length < 3) {
+                    if (cut) give(player, im.createCutTobacco(TobaccoType.VIRGINIA, false, DryingLevel.PERFECT, plugin.getConfigManager().getThresholdStart(DryingLevel.PERFECT), 2), overrideAmount);
+                    else for (TobaccoType type : TobaccoType.values()) give(player, im.createTobaccoLeaf(type, false), overrideAmount);
+                    sender.sendMessage(msg("cmd_give_simple_success")); return;
                 }
-            }
-            case "cut" -> {
-                if (args.length >= 3) {
-                    try {
-                        TobaccoType t = TobaccoType.valueOf(args[2].toUpperCase());
-                        player.getInventory().addItem(im.createCutTobacco(t, false, DryingLevel.PERFECT, 300, 1));
-                        player.sendMessage(msg("cmd_give_cut_type", Placeholder.unparsed("type", plugin.getItemManager().formatTobaccoTypeName(t))));
-                    } catch (IllegalArgumentException e) {
-                        player.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", tobaccoTypeList())));
+                try {
+                    TobaccoType type = TobaccoType.valueOf(args[2].toUpperCase(java.util.Locale.ROOT));
+                    int quality = 1;
+                    int index = 3;
+                    if (cut && args.length > index) {
+                        quality = switch (args[index++].toLowerCase(java.util.Locale.ROOT)) {
+                            case "bad" -> -1; case "rough" -> 0; case "good" -> 1; case "perfect" -> 2;
+                            default -> throw new IllegalArgumentException();
+                        };
                     }
-                } else {
-                    player.getInventory().addItem(im.createCutTobacco(TobaccoType.VIRGINIA, false, DryingLevel.PERFECT, 300, 2));
-                    player.sendMessage(msg("cmd_give_cut_default"));
-                }
+                    DryingLevel drying = args.length > index ? DryingLevel.valueOf(args[index++].toUpperCase(java.util.Locale.ROOT)) : (cut ? DryingLevel.PERFECT : DryingLevel.RAW);
+                    String grade = args.length > index ? args[index++].toLowerCase(java.util.Locale.ROOT) : "normal";
+                    if (index != args.length || (!grade.equals("normal") && !grade.equals("elite"))) throw new IllegalArgumentException();
+                    int seconds = plugin.getConfigManager().getThresholdStart(drying);
+                    ItemStack item = cut ? im.createCutTobacco(type, grade.equals("elite"), drying, seconds, quality)
+                            : im.createTobaccoLeaf(type, grade.equals("elite"), seconds);
+                    give(player, item, overrideAmount);
+                    sender.sendMessage(msg("cmd_give_simple_success"));
+                } catch (IllegalArgumentException e) { sender.sendMessage(msg("cmd_give_tobacco_usage")); }
             }
             case "flavor" -> {
                 if (args.length < 3) {
-                    player.sendMessage(msg("cmd_give_flavor_usage"));
-                    player.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", cigaretteTypeList())));
+                    sender.sendMessage(msg("cmd_give_flavor_usage"));
+                    sender.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", cigaretteTypeList())));
                     return;
                 }
                 try {
@@ -309,98 +365,102 @@ public class CigaroCommand implements CommandExecutor {
                     String variant = args.length >= 4 ? args[3].toLowerCase() : "both";
                     switch (variant) {
                         case "raw" -> {
-                            player.getInventory().addItem(im.createRawIngredient(type));
-                            player.sendMessage(msg("cmd_give_flavor_raw", Placeholder.unparsed("type", formatName(type))));
+                            give(player, im.createRawIngredient(type), overrideAmount);
+                            sender.sendMessage(msg("cmd_give_flavor_raw", Placeholder.unparsed("type", formatName(type))));
                         }
                         case "bottle" -> {
-                            player.getInventory().addItem(im.createFlavorBottle(type));
-                            player.sendMessage(msg("cmd_give_flavor_bottle", Placeholder.unparsed("type", formatName(type))));
+                            give(player, im.createFlavorBottle(type), overrideAmount);
+                            sender.sendMessage(msg("cmd_give_flavor_bottle", Placeholder.unparsed("type", formatName(type))));
                         }
-                        default -> {
-                            player.getInventory().addItem(im.createRawIngredient(type));
-                            player.getInventory().addItem(im.createFlavorBottle(type));
-                            player.sendMessage(msg("cmd_give_flavor_both", Placeholder.unparsed("type", formatName(type))));
+                        case "both" -> {
+                            give(player, im.createRawIngredient(type), overrideAmount);
+                            give(player, im.createFlavorBottle(type), overrideAmount);
+                            sender.sendMessage(msg("cmd_give_flavor_both", Placeholder.unparsed("type", formatName(type))));
                         }
+                        default -> { sender.sendMessage(msg("cmd_invalid_argument")); return; }
                     }
                 } catch (IllegalArgumentException e) {
-                    player.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", cigaretteTypeList())));
+                    sender.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", cigaretteTypeList())));
                 }
             }
             case "cigarette" -> {
                 if (args.length < 4) {
-                    player.sendMessage(msg("cmd_give_cigarette_usage"));
-                    player.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", cigaretteTypeList())));
-                    player.sendMessage(msg("cmd_give_quality_list"));
+                    sender.sendMessage(msg("cmd_give_cigarette_usage"));
+                    sender.sendMessage(msg("cmd_give_types", Placeholder.unparsed("types", cigaretteTypeList())));
+                    sender.sendMessage(msg("cmd_give_quality_list"));
                     return;
                 }
                 try {
                     CigaretteType type = CigaretteType.valueOf(args[2].toUpperCase());
                     CigaretteQuality quality = CigaretteQuality.valueOf(args[3].toUpperCase());
                     int amount = 10;
-                    if (args.length >= 5) try { amount = Math.max(1, Math.min(64, Integer.parseInt(args[4]))); } catch (NumberFormatException ignored) {}
-                    player.getInventory().addItem(im.createCigarette(type, quality, amount));
-                    player.sendMessage(msg("cmd_give_cigarette",
-                            Placeholder.unparsed("amount", String.valueOf(amount)),
+                    if (args.length >= 5) { amount = Integer.parseInt(args[4]); if (amount < 1 || amount > 64) throw new IllegalArgumentException(); }
+                    give(player, im.createCigarette(type, quality, amount), overrideAmount);
+                    sender.sendMessage(msg("cmd_give_cigarette",
+                            Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : amount)),
                             Placeholder.unparsed("type", formatName(type)),
                             Placeholder.unparsed("quality", formatName(quality))));
                 } catch (IllegalArgumentException e) {
-                    player.sendMessage(msg("cmd_give_unknown_type"));
+                    sender.sendMessage(msg("cmd_invalid_argument"));
                 }
             }
             case "smokescreen" -> {
-                player.getInventory().addItem(im.createSmokescreenCigarette(4));
-                player.sendMessage(msg("cmd_give_smokescreen", Placeholder.unparsed("amount", "4")));
+                give(player, im.createSmokescreenCigarette(4), overrideAmount);
+                sender.sendMessage(msg("cmd_give_smokescreen", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 4))));
             }
             case "dryrack" -> {
-                player.getInventory().addItem(im.createDryingRack());
-                player.sendMessage(msg("cmd_give_dryrack"));
+                give(player, im.createDryingRack(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_dryrack"));
             }
             case "cuttable" -> {
-                player.getInventory().addItem(im.createCuttingTable());
-                player.sendMessage(msg("cmd_give_cuttable"));
+                give(player, im.createCuttingTable(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_cuttable"));
             }
             case "roller" -> {
-                player.getInventory().addItem(im.createRollingMachine());
-                player.sendMessage(msg("cmd_give_roller"));
+                give(player, im.createRollingMachine(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_roller"));
             }
             case "infuser" -> {
-                player.getInventory().addItem(im.createInfuser());
-                player.sendMessage(msg("cmd_give_infuser"));
+                give(player, im.createInfuser(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_infuser"));
             }
             case "cigar" -> {
-                if (args.length < 4) { player.sendMessage(msg("cmd_give_cigar_usage")); return; }
+                if (args.length < 4) { sender.sendMessage(msg("cmd_give_cigar_usage")); return; }
                 try {
                     CigaretteType type = CigaretteType.valueOf(args[2].toUpperCase());
                     CigaretteQuality quality = CigaretteQuality.valueOf(args[3].toUpperCase());
                     int amount = args.length >= 5 ? Integer.parseInt(args[4]) : 4;
-                    amount = Math.max(1, Math.min(64, amount));
-                    player.getInventory().addItem(im.createCigar(type, quality, amount));
-                    player.sendMessage(msg("cmd_give_cigar", Placeholder.unparsed("amount", String.valueOf(amount))));
-                } catch (IllegalArgumentException e) { player.sendMessage(msg("cmd_give_unknown_type")); }
+                    if (amount < 1 || amount > 64) throw new IllegalArgumentException();
+                    give(player, im.createCigar(type, quality, amount), overrideAmount);
+                    sender.sendMessage(msg("cmd_give_cigar", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : amount))));
+                } catch (IllegalArgumentException e) { sender.sendMessage(msg("cmd_invalid_argument")); }
             }
             case "pipe" -> {
-                player.getInventory().addItem(im.createPipe());
-                player.sendMessage(msg("cmd_give_pipe"));
+                give(player, im.createPipe(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_pipe"));
             }
             case "hookah" -> {
-                player.getInventory().addItem(im.createHookah());
-                player.sendMessage(msg("cmd_give_hookah"));
+                give(player, im.createHookah(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_hookah"));
             }
             case "blendingtable" -> {
-                player.getInventory().addItem(im.createBlendingTable());
-                player.sendMessage(msg("cmd_give_blendingtable"));
+                give(player, im.createBlendingTable(), overrideAmount);
+                sender.sendMessage(msg("cmd_give_blendingtable"));
             }
             case "patch" -> {
-                player.getInventory().addItem(im.createNicotinePatch(4));
-                player.sendMessage(msg("cmd_give_patch", Placeholder.unparsed("amount", "4")));
+                give(player, im.createNicotinePatch(4), overrideAmount);
+                sender.sendMessage(msg("cmd_give_patch", Placeholder.unparsed("amount", String.valueOf(overrideAmount != null ? overrideAmount : 4))));
             }
-            default -> player.sendMessage(msg("cmd_give_unknown_item"));
+            default -> sender.sendMessage(msg("cmd_give_unknown_item"));
         }
     }
 
     private void handleReload(CommandSender sender) {
         if (!sender.hasPermission("cigaro.admin")) { sender.sendMessage(msg("cmd_no_permission")); return; }
+        int previousInterval = plugin.getConfigManager().getWithdrawalCheckSeconds();
         plugin.getConfigManager().reload();
+        if (previousInterval != plugin.getConfigManager().getWithdrawalCheckSeconds())
+            plugin.getWithdrawalTask().rescheduleWithdrawal();
         plugin.getLanguageManager().load();
         sender.sendMessage(msg("cmd_reload_success"));
     }
@@ -414,8 +474,9 @@ public class CigaroCommand implements CommandExecutor {
             return;
         }
 
+        synchronized (topWaiters) { topWaiters.add(sender); }
         if (!topRefreshing.compareAndSet(false, true)) {
-            showLeaderboard(sender, cachedTop);
+            sender.sendMessage(msg("cmd_top_loading"));
             return;
         }
 
@@ -434,7 +495,11 @@ public class CigaroCommand implements CommandExecutor {
             } finally {
                 topRefreshing.set(false);
             }
-            plugin.getServer().getScheduler().runTask(plugin, () -> showLeaderboard(sender, cachedTop));
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                List<CommandSender> waiters;
+                synchronized (topWaiters) { waiters = new ArrayList<>(topWaiters); topWaiters.clear(); }
+                for (CommandSender waiter : waiters) showLeaderboard(waiter, cachedTop);
+            });
         });
     }
 
@@ -470,6 +535,7 @@ public class CigaroCommand implements CommandExecutor {
 
     private void handleAchievements(CommandSender sender) {
         if (!(sender instanceof Player player)) { sender.sendMessage(msg("cmd_players_only")); return; }
+        if (!player.hasPermission("cigaro.use")) { player.sendMessage(msg("cmd_no_permission")); return; }
         PlayerData data = plugin.getPlayerDataManager().getData(player.getUniqueId());
         var am = plugin.getAchievementManager();
         int unlocked = am.count(data);
@@ -498,21 +564,19 @@ public class CigaroCommand implements CommandExecutor {
     }
 
     private void handleAnalytics(CommandSender sender) {
-        if (!(sender instanceof Player player)) { sender.sendMessage(msg("cmd_players_only")); return; }
-        if (!player.hasPermission("cigaro.admin")) { player.sendMessage(msg("cmd_no_permission")); return; }
+        if (!sender.hasPermission("cigaro.admin")) { sender.sendMessage(msg("cmd_no_permission")); return; }
         plugin.getAnalyticsManager().printReportToConsole();
-        player.sendMessage(msg("cmd_analytics_success"));
+        sender.sendMessage(msg("cmd_analytics_success"));
     }
 
-    private void handleDebug(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player player)) { sender.sendMessage(msg("cmd_players_only")); return; }
-        if (!player.hasPermission("cigaro.admin")) { player.sendMessage(msg("cmd_no_permission")); return; }
+    private void handleDebug(CommandSender sender, Player player, String[] args) {
+        if (!player.hasPermission("cigaro.admin")) { sender.sendMessage(msg("cmd_no_permission")); return; }
 
         if (args.length < 2) {
-            player.sendMessage(Component.empty());
-            player.sendMessage(msg("cmd_debug_header"));
-            for (Component line : msgList("cmd_debug_help")) player.sendMessage(line);
-            player.sendMessage(Component.empty());
+            sender.sendMessage(Component.empty());
+            sender.sendMessage(msg("cmd_debug_header"));
+            for (Component line : msgList("cmd_debug_help")) sender.sendMessage(line);
+            sender.sendMessage(Component.empty());
             return;
         }
 
@@ -520,77 +584,76 @@ public class CigaroCommand implements CommandExecutor {
 
         switch (args[1].toLowerCase()) {
             case "withdrawal" -> {
-                if (args.length < 3) { player.sendMessage(msg("cmd_debug_usage")); return; }
+                if (args.length < 3) { sender.sendMessage(msg("cmd_debug_usage")); return; }
                 try {
-                    int stage = Math.max(0, Math.min(4, Integer.parseInt(args[2])));
+                    int stage = Integer.parseInt(args[2]);
+                    if (stage < 0 || stage > 4) throw new NumberFormatException();
                     int threshold = (int) Math.ceil(PlayerData.stageThreshold(stage));
                     data.setAddictionStage(stage);
                     if (data.getTotalSmoked() < threshold) data.setTotalSmoked(threshold);
                     data.resetOnlineSoberSeconds();
                     data.setLastSmokeTime(System.currentTimeMillis() - 3600000);
                     plugin.getPlayerDataManager().saveNow(player.getUniqueId());
-                    player.sendMessage(msg("cmd_debug_withdrawal_set",
+                    sender.sendMessage(msg("cmd_debug_withdrawal_set",
                             Placeholder.unparsed("stage_name", getStageName(stage)),
                             Placeholder.unparsed("stage", String.valueOf(stage))));
-                } catch (NumberFormatException e) { player.sendMessage(msg("cmd_debug_invalid_number")); }
+                } catch (NumberFormatException e) { sender.sendMessage(msg("cmd_debug_invalid_number")); }
             }
             case "tolerance" -> {
-                if (args.length < 3) { player.sendMessage(msg("cmd_debug_usage")); return; }
+                if (args.length < 3) { sender.sendMessage(msg("cmd_debug_usage")); return; }
                 try {
-                    double val = Math.max(0.0, Math.min(1.0, Double.parseDouble(args[2])));
+                    double val = Double.parseDouble(args[2]);
+                    if (!Double.isFinite(val) || val < 0 || val > 1) throw new NumberFormatException();
                     for (CigaretteType type : CigaretteType.values()) data.addTolerance(type, val - data.getTolerance(type));
                     plugin.getPlayerDataManager().saveNow(player.getUniqueId());
-                    player.sendMessage(msg("cmd_debug_tolerance_set",
+                    sender.sendMessage(msg("cmd_debug_tolerance_set",
                             Placeholder.unparsed("value", String.format("%.0f%%", val * 100))));
-                } catch (NumberFormatException e) { player.sendMessage(msg("cmd_debug_invalid_number")); }
+                } catch (NumberFormatException e) { sender.sendMessage(msg("cmd_debug_invalid_number")); }
             }
             case "smoked" -> {
-                if (args.length < 3) { player.sendMessage(msg("cmd_debug_usage")); return; }
+                if (args.length < 3) { sender.sendMessage(msg("cmd_debug_usage")); return; }
                 try {
                     int amount = Integer.parseInt(args[2]);
-                    data.setTotalSmoked(Math.max(0, amount));
+                    if (amount < 0) throw new NumberFormatException();
+                    data.setTotalSmoked(amount);
                     plugin.getLungDamageManager().updateLungHealth(player, data);
                     plugin.getPlayerDataManager().saveNow(player.getUniqueId());
-                    player.sendMessage(msg("cmd_debug_smoked_set", Placeholder.unparsed("amount", String.valueOf(amount))));
-                } catch (NumberFormatException e) { player.sendMessage(msg("cmd_debug_invalid_number")); }
+                    sender.sendMessage(msg("cmd_debug_smoked_set", Placeholder.unparsed("amount", String.valueOf(amount))));
+                } catch (NumberFormatException e) { sender.sendMessage(msg("cmd_debug_invalid_number")); }
             }
             case "reset" -> {
-                data.setAddictionStage(0); data.setTotalSmoked(0); data.setLastSmokeTime(0);
-                data.resetOnlineSoberSeconds(); data.setPredispositionGenerated(false); data.setMastery(0);
-                data.setWasAddicted(false);
-                data.setLungRecoveredHearts(0);
-                data.resetLungRecoveryProgress();
-                for (CigaretteType type : CigaretteType.values()) data.addTolerance(type, -data.getTolerance(type));
+                data.resetAllProgress();
                 plugin.getLungDamageManager().updateLungHealth(player, data);
                 plugin.getPlayerDataManager().saveNow(player.getUniqueId());
-                player.sendMessage(msg("cmd_debug_reset_done"));
+                sender.sendMessage(msg("cmd_debug_reset_done"));
             }
             case "predisposition" -> {
                 data.setPredispositionGenerated(false);
                 plugin.getPlayerDataManager().generatePredisposition(data);
                 plugin.getPlayerDataManager().saveNow(player.getUniqueId());
-                player.sendMessage(msg("cmd_debug_pred_regen"));
-                for (CigaretteType type : CigaretteType.values()) player.sendMessage(formatPredEntry(type, data));
+                sender.sendMessage(msg("cmd_debug_pred_regen"));
+                for (CigaretteType type : CigaretteType.values()) sender.sendMessage(formatPredEntry(type, data));
             }
             case "blood" -> handleBloodDebug(player);
             case "sober" -> {
-                if (args.length < 3) { player.sendMessage(msg("cmd_debug_usage")); return; }
+                if (args.length < 3) { sender.sendMessage(msg("cmd_debug_usage")); return; }
                 try {
                     double hours = Double.parseDouble(args[2]);
+                    if (!Double.isFinite(hours) || hours < 0 || hours > Long.MAX_VALUE / 3600.0) throw new NumberFormatException();
                     long seconds = (long) (hours * 3600);
                     data.setOnlineSoberSeconds(seconds);
                     plugin.getPlayerDataManager().saveNow(player.getUniqueId());
-                    player.sendMessage(msg("cmd_debug_sober_set",
+                    sender.sendMessage(msg("cmd_debug_sober_set",
                             Placeholder.unparsed("hours", String.format("%.1f", hours)),
                             Placeholder.unparsed("seconds", String.valueOf(seconds))));
-                } catch (NumberFormatException e) { player.sendMessage(msg("cmd_debug_invalid_number")); }
+                } catch (NumberFormatException e) { sender.sendMessage(msg("cmd_debug_invalid_number")); }
             }
-            default -> player.sendMessage(msg("cmd_debug_unknown"));
+            default -> sender.sendMessage(msg("cmd_debug_unknown"));
         }
     }
 
     private void handleBloodDebug(Player player) {
-        player.sendMessage(Component.text("Spawning blood particle test...").color(NamedTextColor.GREEN));
+        player.sendMessage(msg("cmd_debug_blood_start"));
         Location baseLoc = player.getEyeLocation().clone().add(player.getLocation().getDirection().multiply(2)).add(0, 2, 0);
         double spacing = 1.5;
         spawnLabeled(player, baseLoc.clone().add(-spacing * 2, 0, 0), "FALLING_DRIPSTONE_LAVA",
@@ -614,8 +677,8 @@ public class CigaroCommand implements CommandExecutor {
     }
 
     private void spawnLabeled(Player player, Location loc, String label, Runnable spawner) {
-        player.sendMessage(Component.text("  " + label + " at ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.0f %.0f %.0f", loc.getX(), loc.getY(), loc.getZ())).color(NamedTextColor.WHITE)));
+        player.sendMessage(msg("cmd_debug_blood_at", Placeholder.unparsed("label", label))
+                .append(Component.text(String.format("%.0f %.0f %.0f", loc.getX(), loc.getY(), loc.getZ())).color(CigaroColors.GOLD)));
         for (int i = 0; i < 3; i++) Bukkit.getScheduler().runTaskLater(plugin, spawner, i * 15L);
     }
 

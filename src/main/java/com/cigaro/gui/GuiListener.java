@@ -6,6 +6,8 @@ import com.cigaro.config.LanguageManager;
 import com.cigaro.data.CigaretteType;
 import com.cigaro.data.PlayerData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -206,11 +208,17 @@ public class GuiListener implements Listener {
 
     public void openStatsGui(Player player, PlayerData data) {
         Inventory gui = Bukkit.createInventory(new StatsGuiHolder(), 9,
-                lang().get("gui_stats_title"));
+                Component.text("\ue001\ue000\ue002\ue003")
+                        .font(Key.key("cigaro:stats"))
+                        .color(NamedTextColor.WHITE)
+                        .append(lang().get("gui_stats_title").font(Key.key("minecraft:default"))));
 
-        ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack filler = new ItemStack(Material.PAPER);
         ItemMeta fillerMeta = filler.getItemMeta();
         fillerMeta.displayName(Component.empty());
+        var model = fillerMeta.getCustomModelDataComponent();
+        model.setStrings(List.of("gui_blend_frame"));
+        fillerMeta.setCustomModelDataComponent(model);
         filler.setItemMeta(fillerMeta);
         for (int i = 0; i < 9; i++) {
             gui.setItem(i, filler);
@@ -220,8 +228,11 @@ public class GuiListener implements Listener {
         String stageKey = "gui_stats_stage_" + Math.min(stage, 4);
         String stageName = lang().getRaw(stageKey);
 
-        ItemStack stageItem = new ItemStack(Material.BOOK);
+        ItemStack stageItem = new ItemStack(Material.PAPER);
         ItemMeta stageMeta = stageItem.getItemMeta();
+        var stageModel = stageMeta.getCustomModelDataComponent();
+        stageModel.setStrings(List.of("gui_stats_overview"));
+        stageMeta.setCustomModelDataComponent(stageModel);
         stageMeta.displayName(
                 lang().get("gui_stats_stage_name",
                                 Placeholder.unparsed("stage", stageName))
@@ -242,8 +253,11 @@ public class GuiListener implements Listener {
         stageItem.setItemMeta(stageMeta);
         gui.setItem(4, stageItem);
 
-        ItemStack tolItem = new ItemStack(Material.MILK_BUCKET);
+        ItemStack tolItem = new ItemStack(Material.PAPER);
         ItemMeta tolMeta = tolItem.getItemMeta();
+        var tolModel = tolMeta.getCustomModelDataComponent();
+        tolModel.setStrings(List.of("gui_stats_tolerance"));
+        tolMeta.setCustomModelDataComponent(tolModel);
         tolMeta.displayName(
                 lang().get("gui_stats_tolerance_name")
                         .decoration(TextDecoration.BOLD, true)
@@ -264,8 +278,11 @@ public class GuiListener implements Listener {
         tolItem.setItemMeta(tolMeta);
         gui.setItem(2, tolItem);
 
-        ItemStack predItem = new ItemStack(Material.COMPASS);
+        ItemStack predItem = new ItemStack(Material.PAPER);
         ItemMeta predMeta = predItem.getItemMeta();
+        var predModel = predMeta.getCustomModelDataComponent();
+        predModel.setStrings(List.of("gui_stats_predisposition"));
+        predMeta.setCustomModelDataComponent(predModel);
         predMeta.displayName(
                 lang().get("gui_stats_predisposition_name")
                         .decoration(TextDecoration.BOLD, true)

@@ -215,6 +215,8 @@ public class PipeListener implements Listener {
 
         plugin.getPassiveSmokingManager().notifyNearby(
                 player, PassiveSmokingManager.SmokeSource.PIPE);
+        plugin.getServer().getPluginManager().callEvent(new com.cigaro.api.CigaroTobaccoEvent(
+                com.cigaro.api.CigaroTobaccoEvent.Action.PIPE_PUFF, player, player.getLocation(), player.getInventory().getItemInMainHand()));
     }
 
     private void applyTypeEffectsSimple(Player player,

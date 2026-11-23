@@ -555,7 +555,9 @@ public class DatabaseManager {
                     try {
                         tobaccoType = TobaccoType.valueOf(rs.getString("tobacco_type"));
                     } catch (Exception e) {
-                        tobaccoType = TobaccoType.VIRGINIA;
+                        plugin.getLogger().warning("Skipping tobacco plant with unavailable type '"
+                                + rs.getString("tobacco_type") + "' at " + loc + "; saved data retained.");
+                        continue;
                     }
 
                     TobaccoBlock plant = new TobaccoBlock(loc, tobaccoType, rs.getInt("stage"));
