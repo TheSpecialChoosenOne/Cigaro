@@ -82,6 +82,10 @@ Build the plugin and resource pack with Java 25:
 
 The JAR is placed in `build/libs/`; the resource-pack ZIP is placed in `build/distributions/`.
 
+## License
+
+Cigaro, including its resource pack, is available under the [MIT License](LICENSE).
+
 ---
 
 Made for Minecraft servers that enjoy a little more atmosphere.

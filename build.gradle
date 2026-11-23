@@ -32,8 +32,13 @@ tasks.register('resourcePackZip', Zip) {
     archiveFileName = "Cigaro-ResourcePack-${project.version}.zip"
     destinationDirectory = layout.buildDirectory.dir('distributions')
     from 'resourcepack/cigaro_rp'
+    from 'LICENSE'
     preserveFileTimestamps = false
     reproducibleFileOrder = true
+}
+
+tasks.named('jar') {
+    from 'LICENSE'
 }
 
 tasks.named('build') {
